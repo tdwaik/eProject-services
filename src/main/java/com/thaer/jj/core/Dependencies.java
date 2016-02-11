@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Created by thaer on 2/10/16.
+ * Created by Thaer AlDwaik on February 10, 2016.
  */
 public class Dependencies {
 

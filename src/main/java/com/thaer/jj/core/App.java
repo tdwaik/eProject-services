@@ -3,7 +3,7 @@ package com.thaer.jj.core;
 import com.google.gson.Gson;
 
 /**
- * Created by thaer on 2/10/16.
+ * Created by Thaer AlDwaik on February 10, 2016.
  */
 public class App {
 
