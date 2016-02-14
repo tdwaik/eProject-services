@@ -11,6 +11,12 @@ public class User {
 
     private String username;
 
+    private String email;
+
+    private String status;
+
+    private boolean isSeller;
+
     private String firstname;
 
     private String lastname;
@@ -34,6 +40,33 @@ public class User {
 
     public User setUsername(String username) {
         this.username = username;
+        return this;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public User setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public User setStatus(String status) {
+        this.status = status;
+        return this;
+    }
+
+    public boolean isSeller() {
+        return isSeller;
+    }
+
+    public User setIsSeller(boolean isSeller) {
+        this.isSeller = isSeller;
         return this;
     }
 
@@ -72,4 +105,5 @@ public class User {
         this.phoneNumber = phoneNumber;
         return this;
     }
+
 }

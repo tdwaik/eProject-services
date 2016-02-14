@@ -21,11 +21,12 @@ public class UserController extends AbstractController {
         try {
             UserModel userModel = new UserModel();
             user = userModel.getUserById(id);
+            return toJson(false, user);
         } catch (Exception e) {
             e.printStackTrace();
+            return toJson(true);
         }
 
-        return toJson(user);
     }
 
     @POST @Path("/addUser")
@@ -34,12 +35,11 @@ public class UserController extends AbstractController {
         try {
             UserModel userModel = new UserModel();
             userModel.addUser("tdwaik", "t_dwaik@hotmail.com", "Thaer", "AlDwaik", "+962791305948");
+            return toJson(false);
         } catch (Exception e) {
             e.printStackTrace();
+            return toJson(true);
         }
 
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("error", false);
-        return toJson(result);
     }
 }

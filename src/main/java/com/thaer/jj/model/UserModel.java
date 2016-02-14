@@ -15,13 +15,36 @@ public class UserModel extends AbstractModel {
     }
 
     public User getUserById(int id) throws SQLException, ClassNotFoundException {
-
         ResultSet resultSet = executeQuery("SELECT * FROM users WHERE id = " + id);
+        return fillData(resultSet);
+    }
+
+    public String getUserPasswordByEmail(String email) throws Exception {
+        System.out.println("SELECT password FROM users WHERE email = '" + email + "'");
+        if(email != null && !email.isEmpty()) {
+            ResultSet resultSet = executeQuery("SELECT password FROM users WHERE email = '" + email + "'");
+
+            if (resultSet.next()) {
+                return resultSet.getString("password");
+            } else {
+                throw new Exception("User not found !!");
+            }
+        }else {
+            throw new Exception("Empty Email !!");
+        }
+
+    }
+
+    public User fillData(ResultSet resultSet) throws SQLException {
 
         User user = new User();
+
         while(resultSet.next()) {
             user.setId(resultSet.getInt("id"));
             user.setUsername(resultSet.getString("username"));
+            user.setEmail(resultSet.getString("email"));
+            user.setStatus(resultSet.getString("status"));
+            user.setIsSeller(resultSet.getBoolean("is_seller"));
             user.setFirstname(resultSet.getString("firstname"));
             user.setLastname(resultSet.getString("lastname"));
             user.setRegestrationDate(resultSet.getTimestamp("registration_date"));
@@ -29,6 +52,7 @@ public class UserModel extends AbstractModel {
         }
 
         return user;
+
     }
 
     public int addUser(String username, String email, String firstname, String lastname, String phoneNumber) throws SQLException, ClassNotFoundException {
