@@ -3,6 +3,7 @@ package com.thaer.jj.model;
 import com.thaer.jj.core.lib.Validator;
 import com.thaer.jj.entities.User;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -11,7 +12,8 @@ import java.sql.SQLException;
  */
 public class UserModel extends AbstractModel {
 
-    public UserModel() throws SQLException, ClassNotFoundException {
+    public UserModel() throws SQLException, ClassNotFoundException, IOException {
+        super();
     }
 
     public User getUserById(int id) throws SQLException, ClassNotFoundException {

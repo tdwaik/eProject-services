@@ -8,7 +8,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.sql.SQLException;
-import java.util.HashMap;
 
 /**
  * Created by Thaer AlDwaik on February 11, 2016.
@@ -27,43 +26,47 @@ public class UserSessionController extends AbstractController {
     @Produces(MediaType.APPLICATION_JSON)
     public String login(@FormParam("email") String email, @FormParam("password") String password) throws SQLException, ClassNotFoundException {
 
+        // logout if user is login
         if(session.getAttribute("is_in") == "in") {
-            return toJson(false);
+            logout();
         }
-
-        UserModel userModel = new UserModel();
 
         try {
-            userModel.getUserPasswordByEmail(email);
+            UserModel userModel = new UserModel();
+            String userPassword = userModel.getUserPasswordByEmail(email.toLowerCase());
+
+            if(userPassword.equals(password)) {
+                session.setAttribute("user_id", "1");
+                session.setAttribute("is_in", "in");
+
+                return response().error(false).toJson();
+            }else {
+                return response().error(true).message("NOT_FOUND").toJson();
+            }
+
         } catch (Exception e) {
-            return toJson(true, e);
+            return response().error(true).message("ERROR").toJson();
         }
 
-        session.setAttribute("user_id", "1");
-        session.setAttribute("is_in", "in");
-
-        return toJson(false);
     }
 
     @GET @Path("/isLogin")
     @Produces(MediaType.APPLICATION_JSON)
     public String isLogin() {
-        Object a = session.getAttribute("is_in");
         if(session.getAttribute("is_in") == "in") {
-            return toJson(false, true);
+            return response().error(false).result(true).toJson();
         }
 
-        return toJson(false, false);
+        return response().error(false).result(false).toJson();
     }
 
     @GET @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)
     public String logout() {
-        Object a = session.getAttribute("is_in");
         session.removeAttribute("user_id");
         session.removeAttribute("is_in");
 
-        return toJson(false);
+        return response().error(false).toJson();
     }
 
 }

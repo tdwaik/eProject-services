@@ -5,7 +5,6 @@ import com.thaer.jj.model.UserModel;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
 
 /**
  * Created by Thaer AlDwaik on February 10, 2016.
@@ -21,10 +20,10 @@ public class UserController extends AbstractController {
         try {
             UserModel userModel = new UserModel();
             user = userModel.getUserById(id);
-            return toJson(false, user);
+            return response().error(false).result(user).toJson();
         } catch (Exception e) {
             e.printStackTrace();
-            return toJson(true);
+            return response().error(true).toJson();
         }
 
     }
@@ -35,10 +34,10 @@ public class UserController extends AbstractController {
         try {
             UserModel userModel = new UserModel();
             userModel.addUser("tdwaik", "t_dwaik@hotmail.com", "Thaer", "AlDwaik", "+962791305948");
-            return toJson(false);
+            return response().error(false).toJson();
         } catch (Exception e) {
             e.printStackTrace();
-            return toJson(true);
+            return response().error(true).toJson();
         }
 
     }
