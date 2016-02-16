@@ -2,6 +2,7 @@ package com.thaer.jj.model;
 
 import com.thaer.jj.core.lib.Validator;
 import com.thaer.jj.entities.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -17,17 +18,17 @@ public class UserModel extends AbstractModel {
     }
 
     public User getUserById(int id) throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = executeQuery("SELECT * FROM users WHERE id = " + id);
+        ResultSet resultSet = executeQuery("SELECT id, username, email, is_seller, firstname, lastname, phone_number, registration_date FROM users WHERE id = " + id);
         return fillData(resultSet);
     }
 
-    public String getUserPasswordByEmail(String email) throws Exception {
-        System.out.println("SELECT password FROM users WHERE email = '" + email + "'");
+    public boolean checkUserPasswordByUserEmail(String email, String password) throws Exception {
+
         if(email != null && !email.isEmpty()) {
             ResultSet resultSet = executeQuery("SELECT password FROM users WHERE email = '" + email + "'");
 
             if (resultSet.next()) {
-                return resultSet.getString("password");
+                return checkPassword(password, resultSet.getString("password"));
             } else {
                 throw new Exception("User not found !!");
             }
@@ -57,23 +58,37 @@ public class UserModel extends AbstractModel {
 
     }
 
-    public int addUser(String username, String email, String firstname, String lastname, String phoneNumber) throws SQLException, ClassNotFoundException {
+    public int addUser(String username, String email, String password, String firstname, String lastname, String phoneNumber) throws SQLException, ClassNotFoundException {
 
-        if(!validate(username, email, firstname, lastname, phoneNumber)) {
+        if(!validate(username, email, password, firstname, lastname, phoneNumber)) {
             return 0;
         }
 
+        String hashedPassowrd = hashPasword(password);
+
         return executeUpdate(
                 "INSERT INTO users " +
-                        "(username, email, firstname, lastname, phone_number) " +
+                        "(username, email, password, firstname, lastname, phone_number) " +
                         "VALUES " +
-                        "('" + username + "', '" + email + "', '" + firstname + "', '" + lastname + "', '" + phoneNumber + "')"
+                        "('" + username + "', '" + email + "', '" + hashedPassowrd + "', '" + firstname + "', '" + lastname + "', '" + phoneNumber + "')"
         );
 
     }
 
-    public boolean validate(String username, String email, String firstname, String lastname, String phoneNumber) {
+    private String hashPasword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt(15));
+    }
+
+    private boolean checkPassword(String candidate, String hashed) {
+        return BCrypt.checkpw(candidate, hashed);
+    }
+
+    public boolean validate(String username, String email, String password, String firstname, String lastname, String phoneNumber) {
         if(username == null || username.length() < 3 || firstname == null || firstname.length() < 3 || lastname == null || lastname.length() < 3) {
+            return false;
+        }
+
+        if(password.length() < 6) {
             return false;
         }
 

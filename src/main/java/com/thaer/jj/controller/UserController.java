@@ -30,10 +30,17 @@ public class UserController extends AbstractController {
 
     @POST @Path("/addUser")
     @Produces(MediaType.APPLICATION_JSON)
-    public String addUser() {
+    public String addUser(
+            @FormParam("username") String username,
+            @FormParam("email") String email,
+            @FormParam("password") String password,
+            @FormParam("firstname") String firstname,
+            @FormParam("lastname") String lastname,
+            @FormParam("phone_number") String phone_number) {
+
         try {
             UserModel userModel = new UserModel();
-            userModel.addUser("tdwaik", "t_dwaik@hotmail.com", "Thaer", "AlDwaik", "+962791305948");
+            userModel.addUser(username, email, password, firstname, lastname, phone_number);
             return response().error(false).toJson();
         } catch (Exception e) {
             e.printStackTrace();

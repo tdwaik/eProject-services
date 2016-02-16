@@ -15,10 +15,6 @@ public class Dependencies {
     private static Connection mysql = null;
 
     public static Connection Mysql() throws SQLException, ClassNotFoundException, IOException {
-//        if(mysql == null) {
-//            MySql mySql = new MySql();
-//            mysql = mySql.setDatabaseName("jj").connect();
-//        }
 
         if(mysql == null) {
             MySql mySql = new MySql();

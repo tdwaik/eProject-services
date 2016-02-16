@@ -33,15 +33,13 @@ public class UserSessionController extends AbstractController {
 
         try {
             UserModel userModel = new UserModel();
-            String userPassword = userModel.getUserPasswordByEmail(email.toLowerCase());
 
-            if(userPassword.equals(password)) {
-                session.setAttribute("user_id", "1");
+            if(userModel.checkUserPasswordByUserEmail(email.toLowerCase(), password)) {
                 session.setAttribute("is_in", "in");
 
                 return response().error(false).toJson();
             }else {
-                return response().error(true).message("NOT_FOUND").toJson();
+                return response().error(true).toJson();
             }
 
         } catch (Exception e) {
