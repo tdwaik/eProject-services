@@ -76,7 +76,7 @@ public class MySql {
     }
 
     public Connection connect() throws SQLException, ClassNotFoundException {
-        String connectionUrl = "jdbc:mysql://" + host + "/" + databaseName;
+        String connectionUrl = "jdbc:mysql://" + host + ":" + port + "/" + databaseName;
 
         Class.forName("com.mysql.jdbc.Driver");
         return DriverManager.getConnection(connectionUrl, user, password);

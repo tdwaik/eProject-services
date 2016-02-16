@@ -5,6 +5,8 @@ package com.thaer.jj.core;
  */
 public class App extends Dependencies {
 
+    public static String PATH = System.getProperty("user.dir") + "/../webapps/ROOT";
+
     public Response response() {
         return new Response();
     }
