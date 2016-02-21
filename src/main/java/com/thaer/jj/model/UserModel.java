@@ -22,6 +22,11 @@ public class UserModel extends AbstractModel {
         return fillData(resultSet);
     }
 
+    public User getUserByEmail(String email) throws SQLException, ClassNotFoundException {
+        ResultSet resultSet = executeQuery("SELECT id, username, email, is_seller, firstname, lastname, phone_number, registration_date FROM users WHERE email = '" + email + "'");
+        return fillData(resultSet);
+    }
+
     public boolean checkUserPasswordByUserEmail(String email, String password) throws Exception {
 
         if(email != null && !email.isEmpty()) {

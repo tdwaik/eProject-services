@@ -1,4 +1,4 @@
-//package com.thaer.jj.core.lib;
+//package com.thaer.jj.core;
 //
 //import javax.ws.rs.ApplicationPath;
 //import javax.ws.rs.core.Application;
@@ -9,11 +9,5 @@
 //
 //@ApplicationPath("/")
 //public class MyApplication extends Application {
-//
-//    public MyApplication() {
-//        super();
-//        System.out.println("app");
-//        System.out.println("app");
-//    }
 //
 //}

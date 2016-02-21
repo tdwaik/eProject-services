@@ -5,6 +5,7 @@ import com.thaer.jj.model.UserModel;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by Thaer AlDwaik on February 10, 2016.
@@ -14,23 +15,20 @@ import javax.ws.rs.core.MediaType;
 public class UserController extends AbstractController {
 
     @GET @Path("/getUser/{userId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getUser(@PathParam("userId") int id) {
+    public Response getUser(@PathParam("userId") int id) {
         User user = new User();
         try {
             UserModel userModel = new UserModel();
             user = userModel.getUserById(id);
-            return response().error(false).result(user).toJson();
+            return Response.ok().type(MediaType.APPLICATION_JSON).entity(toJson(user)).build();
         } catch (Exception e) {
-            e.printStackTrace();
-            return response().error(true).toJson();
+            return Response.status(500).build();
         }
 
     }
 
     @POST @Path("/addUser")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String addUser(
+    public Response addUser(
             @FormParam("username") String username,
             @FormParam("email") String email,
             @FormParam("password") String password,
@@ -40,11 +38,13 @@ public class UserController extends AbstractController {
 
         try {
             UserModel userModel = new UserModel();
-            userModel.addUser(username, email, password, firstname, lastname, phone_number);
-            return response().error(false).toJson();
+            if(userModel.addUser(username, email, password, firstname, lastname, phone_number) == 1) {
+                return Response.status(201).build();
+            }else {
+                return Response.status(400).build();
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            return response().error(true).toJson();
+            return Response.status(500).build();
         }
 
     }

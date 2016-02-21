@@ -22,7 +22,8 @@
     <session-config>
         <session-timeout>15</session-timeout>
         <cookie-config>
-            <domain>eproject.com</domain>
+            <name>JS</name>
+            <domain>eproject.com,s.eproject.com</domain>
             <http-only>true</http-only>
             <secure>true</secure>
             <max-age>900000</max-age>
