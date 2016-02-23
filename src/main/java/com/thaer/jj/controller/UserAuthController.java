@@ -1,16 +1,18 @@
 package com.thaer.jj.controller;
 
-import com.thaer.jj.entities.User;
 import com.thaer.jj.model.UserModel;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.impl.crypto.MacProvider;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import java.net.HttpCookie;
+import java.security.Key;
 import java.sql.SQLException;
 
 /**
@@ -20,37 +22,23 @@ import java.sql.SQLException;
 @Path("userAuth")
 public class UserAuthController extends AbstractController {
 
-    private HttpSession session;
-    private HttpCookie cookies;
-
-    public UserAuthController(@Context HttpServletRequest request) {
-        session = request.getSession();
-        request.getCookies();
-    }
+    @Context
+    private HttpServletRequest request;
 
     @POST @Path("/login")
     public Response login(@FormParam("email") String email, @FormParam("password") String password) throws SQLException, ClassNotFoundException {
 
-//        // logout if user is login
-//        if(session.getAttribute("is_in") == "in") {
-//            logout();
-//        }
 
         try {
             UserModel userModel = new UserModel();
 
-            //if(userModel.checkUserPasswordByUserEmail(email.toLowerCase(), password)) {
-                session.setAttribute("is_in", "in");
+            if(userModel.checkUserPasswordByUserEmail(email.toLowerCase(), password)) {
+                String s = Jwts.builder().setSubject(request.getRemoteAddr()).signWith(SignatureAlgorithm.HS512, "fuck").compact();
+                return Response.accepted().header("Authorization", s).cookie(new NewCookie("with me", "... fuck me")).build();
 
-
-
-                //NewCookie cookie = new NewCookie("is_in","in");
-
-                return Response.ok().build();
-
-//            }else {
-//                return Response.status(403).build();
-//            }
+            }else {
+                return Response.status(403).build();
+            }
 
         } catch (Exception e) {
             return Response.status(500).build();
@@ -59,20 +47,15 @@ public class UserAuthController extends AbstractController {
     }
 
     @GET @Path("/isLogin")
-    public Response isLogin(@CookieParam("is_in") Cookie cookie) {
-        if(cookie.toString() == "in") {
+    public Response isLogin(@HeaderParam("Authorization") String authorization) {
+
+        try {
+            Jwts.parser().setSigningKey("fuck").parseClaimsJws(authorization).getBody().getSubject().equals(request.getRemoteAddr());
             return Response.ok().build();
+        }catch (SignatureException e) {
+            return Response.status(403).build();
         }
 
-        return Response.status(403).build();
     }
-
-//    @GET @Path("/logout")
-//    public Response logout() {
-//        session.removeAttribute("user_id");
-//        session.removeAttribute("is_in");
-//
-//        return Response.ok().build();
-//    }
 
 }

@@ -23,7 +23,6 @@
         <session-timeout>15</session-timeout>
         <cookie-config>
             <name>JS</name>
-            <domain>eproject.com,s.eproject.com</domain>
             <http-only>true</http-only>
             <secure>true</secure>
             <max-age>900000</max-age>
@@ -43,11 +42,11 @@
         </init-param>
         <init-param>
             <param-name>cors.allowed.headers</param-name>
-            <param-value>Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers</param-value>
+            <param-value>Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization</param-value>
         </init-param>
         <init-param>
             <param-name>cors.exposed.headers</param-name>
-            <param-value>Access-Control-Allow-Origin,Access-Control-Allow-Credentials</param-value>
+                <param-value>Access-Control-Allow-Origin,Access-Control-Allow-Credentials,Authorization</param-value>
         </init-param>
         <init-param>
             <param-name>cors.support.credentials</param-name>
