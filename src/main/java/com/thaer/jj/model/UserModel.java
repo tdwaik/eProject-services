@@ -1,5 +1,6 @@
 package com.thaer.jj.model;
 
+import com.thaer.jj.exceptions.UnAuthorizedException;
 import com.thaer.jj.core.lib.Validator;
 import com.thaer.jj.entities.User;
 import org.mindrot.jbcrypt.BCrypt;
@@ -18,24 +19,33 @@ public class UserModel extends AbstractModel {
     }
 
     public User getUserById(int id) throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = executeQuery("SELECT id, username, email, is_seller, firstname, lastname, phone_number, registration_date FROM users WHERE id = " + id);
+        ResultSet resultSet = executeQuery("SELECT id, username, email, is_seller, firstname, lastname, status, phone_number, registration_date FROM users WHERE id = " + id);
         return fillData(resultSet);
     }
 
     public User getUserByEmail(String email) throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = executeQuery("SELECT id, username, email, is_seller, firstname, lastname, phone_number, registration_date FROM users WHERE email = '" + email + "'");
+        ResultSet resultSet = executeQuery("SELECT id, username, email, is_seller, firstname, lastname, status, phone_number, registration_date FROM users WHERE email = '" + email + "'");
         return fillData(resultSet);
     }
 
-    public boolean checkUserPasswordByUserEmail(String email, String password) throws Exception {
+    public User getUserByUsername(String username) throws SQLException, ClassNotFoundException {
+        ResultSet resultSet = executeQuery("SELECT id, username, email, is_seller, firstname, lastname, status, phone_number, registration_date FROM users WHERE username = '" + username + "'");
+        return fillData(resultSet);
+    }
+
+    public String getUsernameByAuth(String email, String password) throws Exception, UnAuthorizedException {
 
         if(email != null && !email.isEmpty()) {
             ResultSet resultSet = executeQuery("SELECT password, username FROM users WHERE email = '" + email + "'");
 
             if (resultSet.next()) {
-                return checkPassword(password, resultSet.getString("password"));
+                if(checkPassword(password, resultSet.getString("password"))) {
+                    return resultSet.getString("username");
+                }else {
+                    throw new UnAuthorizedException();
+                }
             } else {
-                throw new Exception("User not found !!");
+                throw new UnAuthorizedException();
             }
         }else {
             throw new Exception("Empty Email !!");
@@ -45,9 +55,9 @@ public class UserModel extends AbstractModel {
 
     public User fillData(ResultSet resultSet) throws SQLException {
 
-        User user = new User();
+            User user = new User();
 
-        while(resultSet.next()) {
+        if(resultSet.next()) {
             user.setId(resultSet.getInt("id"));
             user.setUsername(resultSet.getString("username"));
             user.setEmail(resultSet.getString("email"));
@@ -57,9 +67,11 @@ public class UserModel extends AbstractModel {
             user.setLastname(resultSet.getString("lastname"));
             user.setRegestrationDate(resultSet.getTimestamp("registration_date"));
             user.setPhoneNumber(resultSet.getString("phone_number"));
-        }
 
-        return user;
+            return user;
+        }else {
+            return null;
+        }
 
     }
 

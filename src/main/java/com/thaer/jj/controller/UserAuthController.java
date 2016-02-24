@@ -1,19 +1,17 @@
 package com.thaer.jj.controller;
 
+import com.thaer.jj.exceptions.UnAuthorizedException;
 import com.thaer.jj.core.config.Config;
 import com.thaer.jj.model.UserModel;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Thaer AlDwaik on February 11, 2016.
@@ -22,9 +20,6 @@ import java.sql.SQLException;
 @Path("userAuth")
 public class UserAuthController extends AbstractController {
 
-    @Context
-    private HttpServletRequest request;
-
     private String key;
 
     public UserAuthController() throws IOException {
@@ -32,20 +27,35 @@ public class UserAuthController extends AbstractController {
     }
 
     @POST @Path("/login")
-    public Response login(@FormParam("email") String email, @FormParam("password") String password) throws SQLException, ClassNotFoundException, NoSuchAlgorithmException {
+    public Response login(@FormParam("email") String email, @FormParam("password") String password) {
 
         try {
             UserModel userModel = new UserModel();
 
-            if(userModel.checkUserPasswordByUserEmail(email.toLowerCase(), password)) {
-                String jwtAuthorization = Jwts.builder().setSubject(request.getRemoteAddr()).setAudience(request.getRemoteAddr()).signWith(SignatureAlgorithm.HS512, key).compact();
-                return Response.accepted().header("Authorization", jwtAuthorization).build();
+            String username = userModel.getUsernameByAuth(email.toLowerCase(), password);
 
-            }else {
-                return Response.status(401).build();
-            }
+            Date expirationDate = new Date();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(expirationDate);
+            cal.add(Calendar.HOUR_OF_DAY, 1);
+            expirationDate = cal.getTime();
 
-        } catch (Exception e) {
+            String jwtAuthorization = Jwts.builder()
+                    .setIssuer(request.getRemoteAddr())
+                    .setSubject(username)
+                    .setExpiration(expirationDate)
+                    .signWith(SignatureAlgorithm.HS512, key)
+                    .compact();
+
+            String[] jwtAuthorizationParts = jwtAuthorization.split("\\.");
+
+            jwtAuthorization = jwtAuthorizationParts[1] + "." + jwtAuthorizationParts[2];
+
+            return Response.accepted().header("Authorization", jwtAuthorization).build();
+
+        }catch (UnAuthorizedException e) {
+            return Response.status(401).build();
+        }catch (Exception e) {
             return Response.status(500).build();
         }
 
@@ -54,20 +64,29 @@ public class UserAuthController extends AbstractController {
     @GET @Path("/isLogin")
     public Response isLogin(@HeaderParam("Authorization") String authorization) {
 
-        if(authorization == null || authorization.isEmpty()) {
+        if(getUser() == null) {
             return Response.status(401).build();
+        }else {
+            return Response.ok().build();
         }
 
-        try {
-            Jwts.parser().requireSubject(request.getRemoteAddr()).setSigningKey(key).parseClaimsJws(authorization);
-            return Response.ok().build();
-        }catch (SignatureException e) {
-            return Response.status(401).build();
-        }catch (MalformedJwtException e) {
-            return Response.status(401).build();
-        }catch (Exception e) {
-            return Response.status(500).build();
-        }
+//        if(authorization == null || authorization.isEmpty()) {
+//            return Response.status(401).build();
+//        }
+//
+//        try {
+//            authorization = "eyJhbGciOiJIUzUxMiJ9." + authorization;
+//            Jwts.parser()
+//                    .requireIssuer(request.getRemoteAddr())
+//                    .setSigningKey(key)
+//                    .parseClaimsJws(authorization);
+//
+//            return Response.ok().build();
+//        }catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException e) {
+//            return Response.status(401).build();
+//        }catch (Exception e) {
+//            return Response.status(500).build();
+//        }
 
     }
 
