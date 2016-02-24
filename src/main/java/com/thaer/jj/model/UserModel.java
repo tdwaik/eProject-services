@@ -30,7 +30,7 @@ public class UserModel extends AbstractModel {
     public boolean checkUserPasswordByUserEmail(String email, String password) throws Exception {
 
         if(email != null && !email.isEmpty()) {
-            ResultSet resultSet = executeQuery("SELECT password FROM users WHERE email = '" + email + "'");
+            ResultSet resultSet = executeQuery("SELECT password, username FROM users WHERE email = '" + email + "'");
 
             if (resultSet.next()) {
                 return checkPassword(password, resultSet.getString("password"));
