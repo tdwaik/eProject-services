@@ -19,11 +19,11 @@ public class Dependencies {
         if(mysql == null) {
             MySql mySql = new MySql();
             mysql = mySql
-                    .setHost(Config.getConfig("mysql.host"))
-                    .setPort(Integer.parseInt(Config.getConfig("mysql.port")))
-                    .setUser(Config.getConfig("mysql.user"))
-                    .setPassword(Config.getConfig("mysql.password"))
-                    .setDatabaseName(Config.getConfig("mysql.database_name"))
+                    .setHost(Config.getConfig("mysql.host").trim())
+                    .setPort(Integer.parseInt(Config.getConfig("mysql.port").trim()))
+                    .setUser(Config.getConfig("mysql.user").trim())
+                    .setPassword(Config.getConfig("mysql.password").trim())
+                    .setDatabaseName(Config.getConfig("mysql.database_name").trim())
                     .connect();
         }
 

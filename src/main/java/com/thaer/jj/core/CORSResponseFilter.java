@@ -1,24 +1,29 @@
-//package com.thaer.jj.core;
-//
-//import javax.ws.rs.container.ContainerRequestContext;
-//import javax.ws.rs.container.ContainerResponseContext;
-//import javax.ws.rs.container.ContainerResponseFilter;
-//import javax.ws.rs.core.MultivaluedMap;
-//import java.io.IOException;
-//
-///**
-// * Created by thaer on 2/17/16.
-// */
-//public class CORSResponseFilter implements ContainerResponseFilter {
-//
-//    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
-//
-//        MultivaluedMap<String, Object> headers = responseContext.getHeaders();
-//
-//        headers.add("Access-Control-Allow-Origin", "*");
-//        //headers.add("Access-Control-Allow-Origin", "http://podcastpedia.org"); //allows CORS requests only coming from podcastpedia.org
-//        headers.add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
-//        headers.add("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, X-Codingpedia");
-//    }
-//
-//}
+package com.thaer.jj.core;
+
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.Provider;
+import java.io.IOException;
+
+/**
+ * Created by Thaer AlDwaik on February 17, 2016.
+ */
+@Provider
+public class CORSResponseFilter implements ContainerResponseFilter {
+
+    @Override
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+
+        MultivaluedMap<String, Object> headers = responseContext.getHeaders();
+
+        headers.add("Access-Control-Allow-Origin", "http://eproject.com");
+        headers.add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS");
+        headers.add("Access-Control-Allow-Headers", "Content-Type, X-Requested-With, accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization");
+        headers.add("Access-Control-Expose-Headers", "Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Authorization, Access-Control-Preflight-Maxage");
+        headers.add("Access-Control-Preflight-Maxage", "86400");
+
+    }
+
+}
