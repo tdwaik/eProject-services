@@ -27,7 +27,7 @@ public class UserController extends AbstractController {
 
     }
 
-    @POST @Path("/addUser")
+    @PUT @Path("/addUser")
     public Response addUser(
             @FormParam("username") String username,
             @FormParam("email") String email,
