@@ -13,4 +13,39 @@ public class Category {
 
     private String name;
 
+    public int getId() {
+        return id;
+    }
+
+    public Category setId(int id) {
+        this.id = id;
+        return this;
+    }
+
+    public int getIsMain() {
+        return isMain;
+    }
+
+    public Category setIsMain(int isMain) {
+        this.isMain = isMain;
+        return this;
+    }
+
+    public int getSubOf() {
+        return subOf;
+    }
+
+    public Category setSubOf(int subOf) {
+        this.subOf = subOf;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Category setName(String name) {
+        this.name = name;
+        return this;
+    }
 }
