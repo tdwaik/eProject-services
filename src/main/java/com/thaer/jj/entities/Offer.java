@@ -1,5 +1,7 @@
 package com.thaer.jj.entities;
 
+import java.sql.Timestamp;
+
 /**
  * Created by thaer on 2/25/16.
  */
@@ -16,6 +18,8 @@ public class Offer {
     private String condition;
 
     private String status;
+
+    private Timestamp insertDate;
 
     public int getId() {
         return id;
@@ -68,6 +72,15 @@ public class Offer {
 
     public Offer setStatus(String status) {
         this.status = status;
+        return this;
+    }
+
+    public Timestamp getInsertDate() {
+        return insertDate;
+    }
+
+    public Offer setInsertDate(Timestamp insertDate) {
+        this.insertDate = insertDate;
         return this;
     }
 }

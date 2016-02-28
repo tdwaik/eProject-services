@@ -15,11 +15,11 @@ import javax.ws.rs.core.Response;
 public class UserController extends AbstractController {
 
     @GET @Path("/getUser/{userId}")
-    public Response getUser(@PathParam("userId") int id) {
+    public Response getUser(@PathParam("userId") int userId) {
         User user = new User();
         try {
             UserModel userModel = new UserModel();
-            user = userModel.getUserById(id);
+            user = userModel.getUserById(userId);
             return Response.ok().type(MediaType.APPLICATION_JSON).entity(toJson(user)).build();
         } catch (Exception e) {
             return Response.status(500).build();
