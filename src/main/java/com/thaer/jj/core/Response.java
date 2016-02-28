@@ -5,7 +5,8 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 
 /**
- * Created by Thaer AlDwaik on February 14, 2016.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since February 14, 2016.
  */
 public class Response {
 

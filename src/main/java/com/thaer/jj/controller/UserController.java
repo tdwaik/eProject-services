@@ -8,7 +8,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * Created by Thaer AlDwaik on February 10, 2016.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since February 10, 2016.
  */
 
 @Path("user")

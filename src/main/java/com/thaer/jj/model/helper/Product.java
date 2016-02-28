@@ -5,7 +5,8 @@ import com.thaer.jj.entities.Item;
 import com.thaer.jj.entities.Offer;
 
 /**
- * Created by Thaer Aldwaik on February 28, 2016
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since February 28, 2016
  */
 public class Product {
 

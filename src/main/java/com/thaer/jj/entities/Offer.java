@@ -3,7 +3,8 @@ package com.thaer.jj.entities;
 import java.sql.Timestamp;
 
 /**
- * Created by Thaer AlDwaik on February 25, 2016.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since February 25, 2016.
  */
 public class Offer {
 

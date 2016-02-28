@@ -1,7 +1,8 @@
 package com.thaer.jj.core.lib;
 
 /**
- * Created by Thaer AlDwaik on February 10, 2016.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since February 10, 2016.
  */
 public class RegexPatterns {
 

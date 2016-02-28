@@ -1,7 +1,8 @@
 package com.thaer.jj.entities;
 
 /**
- * Created by Thaer AlDwaik on February 25, 2016.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since February 25, 2016.
  */
 public class Category {
 

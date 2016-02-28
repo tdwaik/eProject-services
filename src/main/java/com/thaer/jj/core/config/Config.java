@@ -6,7 +6,8 @@ import java.io.*;
 import java.util.Properties;
 
 /**
- * Created by Thaer AlDwaik on February 14, 2016.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since February 14, 2016.
  */
 public class Config {
 

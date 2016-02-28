@@ -6,7 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 /**
- * Created by Thaer AlDwaik on February 28, 2016.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since February 28, 2016.
  */
 
 @Path("backoffice/product")

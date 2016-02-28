@@ -4,7 +4,8 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 /**
- * Created by Thaer AlDwaik on February 16, 2016.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since February 16, 2016.
  */
 
 @ApplicationPath("/")

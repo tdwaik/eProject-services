@@ -14,7 +14,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by Thaer AlDwaik on February 11, 2016.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since February 11, 2016.
  */
 
 @Path("userAuth")

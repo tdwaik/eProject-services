@@ -8,7 +8,8 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
 /**
- * Created by Thaer AlDwaik on February 17, 2016.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since February 17, 2016.
  */
 @Provider
 public class CORSResponseFilter implements ContainerResponseFilter {
