@@ -1,7 +1,7 @@
 package com.thaer.jj.entities;
 
 /**
- * Created by thaer on 2/25/16.
+ * Created by Thaer AlDwaik on February 25, 2016.
  */
 public class Item {
 

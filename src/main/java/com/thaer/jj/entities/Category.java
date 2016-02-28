@@ -1,13 +1,13 @@
 package com.thaer.jj.entities;
 
 /**
- * Created by thaer on 2/25/16.
+ * Created by Thaer AlDwaik on February 25, 2016.
  */
 public class Category {
 
     private int id;
 
-    private int isMain;
+    private boolean isMain;
 
     private int subOf;
 
@@ -22,11 +22,11 @@ public class Category {
         return this;
     }
 
-    public int getIsMain() {
+    public boolean getIsMain() {
         return isMain;
     }
 
-    public Category setIsMain(int isMain) {
+    public Category setIsMain(boolean isMain) {
         this.isMain = isMain;
         return this;
     }

@@ -25,6 +25,8 @@ public class User {
 
     private String phoneNumber;
 
+    private String gender;
+
     public int getId() {
         return id;
     }
@@ -106,4 +108,11 @@ public class User {
         return this;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 }

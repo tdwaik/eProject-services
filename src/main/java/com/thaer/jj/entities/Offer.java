@@ -3,7 +3,7 @@ package com.thaer.jj.entities;
 import java.sql.Timestamp;
 
 /**
- * Created by thaer on 2/25/16.
+ * Created by Thaer AlDwaik on February 25, 2016.
  */
 public class Offer {
 
@@ -20,6 +20,8 @@ public class Offer {
     private String status;
 
     private Timestamp insertDate;
+
+    private Timestamp lastUpdate;
 
     public int getId() {
         return id;
@@ -81,6 +83,15 @@ public class Offer {
 
     public Offer setInsertDate(Timestamp insertDate) {
         this.insertDate = insertDate;
+        return this;
+    }
+
+    public Timestamp getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public Offer setLastUpdate(Timestamp lastUpdate) {
+        this.lastUpdate = lastUpdate;
         return this;
     }
 }

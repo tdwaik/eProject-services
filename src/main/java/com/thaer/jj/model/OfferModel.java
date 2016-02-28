@@ -23,7 +23,12 @@ public class OfferModel extends AbstractModel {
 
     public Product getProductDetails(int offerId) throws SQLException, ClassNotFoundException {
 
-        ResultSet resultSet = executeQuery("SELECT * FROM offers INNER JOIN items ON offers.item_id = items.id WHERE offers.id = " + offerId);
+        ResultSet resultSet = executeQuery(
+                        "SELECT * FROM offers " +
+                        "INNER JOIN items ON offers.item_id = items.id " +
+                        "INNER JOIN categories ON items.category_id = categories.id" +
+                        "WHERE offers.id = " + offerId
+        );
         return  fillData(resultSet).get(0);
 
     }
@@ -40,10 +45,16 @@ public class OfferModel extends AbstractModel {
             product.offer.setPrice(resultSet.getInt("offers.price"));
             product.offer.setAmount(resultSet.getInt("offers.amount"));
             product.offer.setInsertDate(resultSet.getTimestamp("offers.insert_date"));
+            product.offer.setLastUpdate(resultSet.getTimestamp("offers.last_update"));
 
             product.item.setTitle(resultSet.getString("items.title"));
             product.item.setDescription(resultSet.getString("items.description"));
             product.item.setPicture(resultSet.getString("items.picture"));
+
+            product.category.setId(resultSet.getInt("categories.id"));
+            product.category.setIsMain(resultSet.getBoolean("categories.is_main"));
+            product.category.setSubOf(resultSet.getInt("categories.sub_of"));
+            product.category.setName(resultSet.getString("categories.name"));
 
             productList.add(product);
         }

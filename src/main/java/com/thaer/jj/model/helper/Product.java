@@ -1,5 +1,6 @@
 package com.thaer.jj.model.helper;
 
+import com.thaer.jj.entities.Category;
 import com.thaer.jj.entities.Item;
 import com.thaer.jj.entities.Offer;
 
@@ -12,9 +13,12 @@ public class Product {
 
     public Item item;
 
+    public Category category;
+
     public Product() {
-        offer = new Offer();
-        item = new Item();
+        offer       = new Offer();
+        item        = new Item();
+        category    = new Category();
     }
 
 }
