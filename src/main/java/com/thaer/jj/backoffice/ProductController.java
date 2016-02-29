@@ -11,22 +11,19 @@ import javax.ws.rs.core.Response;
  */
 
 @Path("backoffice/product")
-public class ProductController {
+public class ProductController extends BackOfficeController {
 
-//    @PUT @Path("/addProduct")
-//    public Response addProduct(
-//            @FormParam("title") String title,
-//            @FormParam("description") String description,
-//            @FormParam("price") int price,
-//            @FormParam("amount") int amount
-//    ) {
-//
-//    try {
-//        isAurh("addProduct");
-//    }catch() {
-//
-//    }
-//
-//    }
+    @PUT
+    @Path("/addProduct")
+    public Response addProduct(
+            @FormParam("title") String title,
+            @FormParam("description") String description,
+            @FormParam("price") int price,
+            @FormParam("amount") int amount
+    ) {
+
+        return Response.ok().build();
+
+    }
 
 }

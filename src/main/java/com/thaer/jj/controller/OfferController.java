@@ -1,7 +1,7 @@
 package com.thaer.jj.controller;
 
 import com.thaer.jj.model.OfferModel;
-import com.thaer.jj.model.helper.Product;
+import com.thaer.jj.model.helpers.ProductDetails;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 
 @Path("offer")
-public class OfferController extends AbstractController {
+public class OfferController extends MainController {
 
     private OfferModel offerModel;
 
@@ -29,9 +29,9 @@ public class OfferController extends AbstractController {
     @Path("/getLastProducts")
     public Response getLastProducts() {
         try {
-            ArrayList<Product> productList = offerModel.getLastProducts();
+            ArrayList<ProductDetails> productDetailsList = offerModel.getLastProducts();
 
-            return Response.ok().entity(toJson(productList)).build();
+            return Response.ok().entity(toJson(productDetailsList)).build();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -52,8 +52,8 @@ public class OfferController extends AbstractController {
         try {
 
             if(offerId > 0) {
-                Product productDetails = offerModel.getProductDetails(offerId);
-                return Response.ok().entity(toJson(productDetails)).build();
+                ProductDetails productDetailsDetails = offerModel.getProductDetails(offerId);
+                return Response.ok().entity(toJson(productDetailsDetails)).build();
 
             }else {
                 return Response.status(400).build();

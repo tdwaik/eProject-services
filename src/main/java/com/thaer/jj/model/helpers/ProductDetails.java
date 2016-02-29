@@ -1,4 +1,4 @@
-package com.thaer.jj.model.helper;
+package com.thaer.jj.model.helpers;
 
 import com.thaer.jj.entities.Category;
 import com.thaer.jj.entities.Item;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
  * @since February 28, 2016
  */
-public class Product {
+public class ProductDetails {
 
     public Offer offer;
 
@@ -20,7 +20,7 @@ public class Product {
 
     public ArrayList<ItemAttributesDetails> itemAttributesDetails;
 
-    public Product() {
+    public ProductDetails() {
         offer       = new Offer();
         item        = new Item();
         category    = new Category();

@@ -34,22 +34,22 @@ public class UserModel extends AbstractModel {
         return fillData(resultSet);
     }
 
-    public String getUsernameByAuth(String email, String password) throws Exception, UnAuthorizedException {
+    public String getUsernameByAuth(String email, String password) throws UnAuthorizedException, SQLException, ClassNotFoundException {
 
-        if(email != null && !email.isEmpty()) {
-            ResultSet resultSet = executeQuery("SELECT password, username FROM users WHERE email = '" + email + "'");
+        if(!Validator.checkEmail(email)) {
+            throw new IllegalArgumentException();
+        }
 
-            if (resultSet.next()) {
-                if(checkPassword(password, resultSet.getString("password"))) {
-                    return resultSet.getString("username");
-                }else {
-                    throw new UnAuthorizedException();
-                }
-            } else {
+        ResultSet resultSet = executeQuery("SELECT password, username FROM users WHERE email = '" + email + "'");
+
+        if (resultSet.next()) {
+            if(checkPassword(password, resultSet.getString("password"))) {
+                return resultSet.getString("username");
+            }else {
                 throw new UnAuthorizedException();
             }
-        }else {
-            throw new Exception("Empty Email !!");
+        } else {
+            throw new UnAuthorizedException();
         }
 
     }

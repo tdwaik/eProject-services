@@ -1,7 +1,7 @@
 package com.thaer.jj.model;
 
-import com.thaer.jj.entities.ItemAttributeValue;
-import com.thaer.jj.model.helper.ItemAttributesDetails;
+import com.sun.xml.internal.bind.v2.runtime.IllegalAnnotationException;
+import com.thaer.jj.model.helpers.ItemAttributesDetails;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -34,6 +34,18 @@ public class ItemAttributeModel extends AbstractModel {
         }
 
         return itemAttributesList;
+    }
+
+    public int addItemAttribute(String name) throws SQLException {
+        if(name == null) {
+            throw new IllegalArgumentException();
+        }
+
+        return executeUpdate("INSERT INTO items_attributes (name) VALUES ('" + name + "')");
+    }
+
+    public void addItemAttributesValues() {
+
     }
 
 }

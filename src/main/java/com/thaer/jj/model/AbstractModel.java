@@ -17,7 +17,16 @@ public abstract class AbstractModel extends App {
     private Statement statement;
 
     public AbstractModel() throws SQLException, ClassNotFoundException, IOException {
+
+        // set manual commit
+        Dependencies.Mysql().setAutoCommit(false);
+
+        // create statement
         statement = Dependencies.Mysql().createStatement();
+    }
+
+    public void commit() throws SQLException, IOException, ClassNotFoundException {
+        Dependencies.Mysql().commit();
     }
 
     public ResultSet executeQuery(String query) throws SQLException, ClassNotFoundException {

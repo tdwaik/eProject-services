@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
  */
 
 @Path("user")
-public class UserController extends AbstractController {
+public class UserController extends MainController {
 
     @GET @Path("/getUser/{userId}")
     public Response getUser(@PathParam("userId") int userId) {

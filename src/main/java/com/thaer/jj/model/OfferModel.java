@@ -1,7 +1,7 @@
 package com.thaer.jj.model;
 
-import com.thaer.jj.model.helper.ItemAttributesDetails;
-import com.thaer.jj.model.helper.Product;
+import com.thaer.jj.model.helpers.ItemAttributesDetails;
+import com.thaer.jj.model.helpers.ProductDetails;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -16,7 +16,7 @@ public class OfferModel extends AbstractModel {
     public OfferModel() throws SQLException, ClassNotFoundException, IOException {
     }
 
-    public ArrayList<Product> getLastProducts() throws SQLException, ClassNotFoundException, IOException {
+    public ArrayList<ProductDetails> getLastProducts() throws SQLException, ClassNotFoundException, IOException {
 
         ResultSet resultSet = executeQuery("SELECT * FROM offers " +
                 "INNER JOIN items ON offers.item_id = items.id " +
@@ -26,7 +26,7 @@ public class OfferModel extends AbstractModel {
 
     }
 
-    public Product getProductDetails(int offerId) throws SQLException, ClassNotFoundException, IOException {
+    public ProductDetails getProductDetails(int offerId) throws SQLException, ClassNotFoundException, IOException {
 
         ResultSet resultSet = executeQuery(
                         "SELECT * FROM offers " +
@@ -39,39 +39,70 @@ public class OfferModel extends AbstractModel {
 
     }
 
-    public ArrayList<Product> fillData(ResultSet resultSet) throws SQLException, IOException, ClassNotFoundException {
+    public ArrayList<ProductDetails> fillData(ResultSet resultSet) throws SQLException, IOException, ClassNotFoundException {
 
-        ArrayList<Product> productList = new ArrayList<>();
+        ArrayList<ProductDetails> productDetailsList = new ArrayList<>();
 
         ItemAttributeModel itemAttributeModel = new ItemAttributeModel();
 
         while(resultSet.next()) {
 
-            Product product = new Product();
+            ProductDetails productDetails = new ProductDetails();
 
-            product.offer.setId(resultSet.getInt("offers.id"));
-            product.offer.setPrice(resultSet.getInt("offers.price"));
-            product.offer.setAmount(resultSet.getInt("offers.amount"));
-            product.offer.setInsertDate(resultSet.getTimestamp("offers.insert_date"));
-            product.offer.setLastUpdate(resultSet.getTimestamp("offers.last_update"));
+            productDetails.offer.setId(resultSet.getInt("offers.id"));
+            productDetails.offer.setPrice(resultSet.getInt("offers.price"));
+            productDetails.offer.setAmount(resultSet.getInt("offers.amount"));
+            productDetails.offer.setInsertDate(resultSet.getTimestamp("offers.insert_date"));
+            productDetails.offer.setLastUpdate(resultSet.getTimestamp("offers.last_update"));
 
-            product.item.setTitle(resultSet.getString("items.title"));
-            product.item.setDescription(resultSet.getString("items.description"));
-            product.item.setPicture(resultSet.getString("items.picture"));
+            productDetails.item.setTitle(resultSet.getString("items.title"));
+            productDetails.item.setDescription(resultSet.getString("items.description"));
+            productDetails.item.setPicture(resultSet.getString("items.picture"));
 
-            product.category.setId(resultSet.getInt("categories.id"));
-            product.category.setIsMain(resultSet.getBoolean("categories.is_main"));
-            product.category.setSubOf(resultSet.getInt("categories.sub_of"));
-            product.category.setName(resultSet.getString("categories.name"));
+            productDetails.category.setId(resultSet.getInt("categories.id"));
+            productDetails.category.setIsMain(resultSet.getBoolean("categories.is_main"));
+            productDetails.category.setSubOf(resultSet.getInt("categories.sub_of"));
+            productDetails.category.setName(resultSet.getString("categories.name"));
 
             ArrayList<ItemAttributesDetails> itemAttributesDetails = itemAttributeModel.getItemAttributes(resultSet.getInt("items.id"));
 
-            product.itemAttributesDetails = itemAttributesDetails;
+            productDetails.itemAttributesDetails = itemAttributesDetails;
 
-            productList.add(product);
+            productDetailsList.add(productDetails);
         }
 
-        return productList;
+        return productDetailsList;
 
     }
+
+//    public int addProduct(ProductDetails productDetails) {
+//
+//        // Add Item
+//        executeUpdate(
+//                "INSERT INTO users " +
+//                        "(username, email, password, firstname, lastname, phone_number) " +
+//                        "VALUES " +
+//                        "('" + username + "', '" + email + "', '" + hashedPassowrd + "', '" + firstname + "', '" + lastname + "', '" + phoneNumber + "')"
+//        );
+//
+//        // Add Item Attributes
+//        executeUpdate(
+//                "INSERT INTO users " +
+//                        "(username, email, password, firstname, lastname, phone_number) " +
+//                        "VALUES " +
+//                        "('" + username + "', '" + email + "', '" + hashedPassowrd + "', '" + firstname + "', '" + lastname + "', '" + phoneNumber + "')"
+//        );
+//
+//        // Add Offer
+//        executeUpdate(
+//                "INSERT INTO users " +
+//                        "(username, email, password, firstname, lastname, phone_number) " +
+//                        "VALUES " +
+//                        "('" + username + "', '" + email + "', '" + hashedPassowrd + "', '" + firstname + "', '" + lastname + "', '" + phoneNumber + "')"
+//        );
+//
+//        // return success
+//        return true;
+//    }
+
 }
