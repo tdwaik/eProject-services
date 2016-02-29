@@ -1,5 +1,6 @@
 package com.thaer.jj.model;
 
+import com.thaer.jj.model.helper.ItemAttributesDetails;
 import com.thaer.jj.model.helper.Product;
 
 import java.io.IOException;
@@ -15,28 +16,34 @@ public class OfferModel extends AbstractModel {
     public OfferModel() throws SQLException, ClassNotFoundException, IOException {
     }
 
-    public ArrayList<Product> getLastProducts() throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> getLastProducts() throws SQLException, ClassNotFoundException, IOException {
 
-        ResultSet resultSet = executeQuery("SELECT * FROM offers INNER JOIN items ON offers.item_id = items.id LIMIT 10");
-        return  fillData(resultSet);
+        ResultSet resultSet = executeQuery("SELECT * FROM offers " +
+                "INNER JOIN items ON offers.item_id = items.id " +
+                "INNER JOIN categories ON items.category_id = categories.id " +
+                "LIMIT 10");
+        return fillData(resultSet);
 
     }
 
-    public Product getProductDetails(int offerId) throws SQLException, ClassNotFoundException {
+    public Product getProductDetails(int offerId) throws SQLException, ClassNotFoundException, IOException {
 
         ResultSet resultSet = executeQuery(
                         "SELECT * FROM offers " +
                         "INNER JOIN items ON offers.item_id = items.id " +
-                        "INNER JOIN categories ON items.category_id = categories.id" +
+                        "INNER JOIN categories ON items.category_id = categories.id " +
                         "WHERE offers.id = " + offerId
         );
-        return  fillData(resultSet).get(0);
+
+        return fillData(resultSet).get(0);
 
     }
 
-    public ArrayList<Product> fillData(ResultSet resultSet) throws SQLException {
+    public ArrayList<Product> fillData(ResultSet resultSet) throws SQLException, IOException, ClassNotFoundException {
 
         ArrayList<Product> productList = new ArrayList<>();
+
+        ItemAttributeModel itemAttributeModel = new ItemAttributeModel();
 
         while(resultSet.next()) {
 
@@ -56,6 +63,10 @@ public class OfferModel extends AbstractModel {
             product.category.setIsMain(resultSet.getBoolean("categories.is_main"));
             product.category.setSubOf(resultSet.getInt("categories.sub_of"));
             product.category.setName(resultSet.getString("categories.name"));
+
+            ArrayList<ItemAttributesDetails> itemAttributesDetails = itemAttributeModel.getItemAttributes(resultSet.getInt("items.id"));
+
+            product.itemAttributesDetails = itemAttributesDetails;
 
             productList.add(product);
         }

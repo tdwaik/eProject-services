@@ -39,6 +39,9 @@ public class OfferController extends AbstractController {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return Response.status(500).build();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Response.status(500).build();
         }
 
     }
@@ -47,14 +50,22 @@ public class OfferController extends AbstractController {
     @Path("/getProductDetails/{offerId}")
     public Response getProductDetails(@PathParam("offerId") int offerId) {
         try {
-            Product productDetails = offerModel.getProductDetails(offerId);
 
-            return Response.ok().entity(toJson(productDetails)).build();
+            if(offerId > 0) {
+                Product productDetails = offerModel.getProductDetails(offerId);
+                return Response.ok().entity(toJson(productDetails)).build();
+
+            }else {
+                return Response.status(400).build();
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
             return Response.status(500).build();
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return Response.status(500).build();
+        } catch (IOException e) {
             e.printStackTrace();
             return Response.status(500).build();
         }
