@@ -13,7 +13,7 @@ import java.sql.SQLException;
  * @since February 11, 2016.
  */
 
-@Path("userAuth")
+    @Path("usersAuth")
 public class UserAuthController extends MainController {
 
     @POST @Path("/login")
@@ -31,6 +31,7 @@ public class UserAuthController extends MainController {
             return Response.status(401).build();
 
         }catch (IOException | SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
             return Response.status(500).build();
         }
 
@@ -39,7 +40,7 @@ public class UserAuthController extends MainController {
     @GET @Path("/isLogin")
     public Response isLogin() {
 
-        if(isAuthUser) {
+        if(isAuthUser()) {
             return Response.status(401).build();
         }else {
             return Response.ok().build();

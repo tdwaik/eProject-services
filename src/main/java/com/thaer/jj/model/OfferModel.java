@@ -1,7 +1,8 @@
 package com.thaer.jj.model;
 
-import com.thaer.jj.model.helpers.ItemAttributesDetails;
-import com.thaer.jj.model.helpers.ProductDetails;
+import com.thaer.jj.entities.User;
+import com.thaer.jj.model.sets.ItemAttributesDetails;
+import com.thaer.jj.model.sets.ProductDetails;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -16,12 +17,16 @@ public class OfferModel extends AbstractModel {
     public OfferModel() throws SQLException, ClassNotFoundException, IOException {
     }
 
-    public ArrayList<ProductDetails> getLastProducts() throws SQLException, ClassNotFoundException, IOException {
+    public ArrayList<ProductDetails> getProductsList(String order, int from, int to) throws SQLException, ClassNotFoundException, IOException {
+        order = order.toUpperCase();
+        if(!order.equals("ASC") && !order.equals("DESC")) {
+            throw new IllegalArgumentException();
+        }
 
         ResultSet resultSet = executeQuery("SELECT * FROM offers " +
                 "INNER JOIN items ON offers.item_id = items.id " +
                 "INNER JOIN categories ON items.category_id = categories.id " +
-                "LIMIT 10");
+                "order by offers.id " + order + " LIMIT " + from + ", " + to);
         return fillData(resultSet);
 
     }
@@ -75,34 +80,74 @@ public class OfferModel extends AbstractModel {
 
     }
 
-//    public int addProduct(ProductDetails productDetails) {
-//
-//        // Add Item
-//        executeUpdate(
-//                "INSERT INTO users " +
-//                        "(username, email, password, firstname, lastname, phone_number) " +
-//                        "VALUES " +
-//                        "('" + username + "', '" + email + "', '" + hashedPassowrd + "', '" + firstname + "', '" + lastname + "', '" + phoneNumber + "')"
-//        );
-//
-//        // Add Item Attributes
-//        executeUpdate(
-//                "INSERT INTO users " +
-//                        "(username, email, password, firstname, lastname, phone_number) " +
-//                        "VALUES " +
-//                        "('" + username + "', '" + email + "', '" + hashedPassowrd + "', '" + firstname + "', '" + lastname + "', '" + phoneNumber + "')"
-//        );
-//
-//        // Add Offer
-//        executeUpdate(
-//                "INSERT INTO users " +
-//                        "(username, email, password, firstname, lastname, phone_number) " +
-//                        "VALUES " +
-//                        "('" + username + "', '" + email + "', '" + hashedPassowrd + "', '" + firstname + "', '" + lastname + "', '" + phoneNumber + "')"
-//        );
-//
-//        // return success
-//        return true;
-//    }
+    public int addProduct(User user, ProductDetails productDetails) throws SQLException {
+
+        try {
+
+//            productDetails.validate();
+
+            int affectedRows = 0;
+
+            // Start transaction
+            dbCconnection.setAutoCommit(false);
+
+            // Add Item
+            affectedRows = executeUpdate(
+                    "INSERT INTO items " +
+                            "(title, description, picture, status) " +
+                            "VALUES " +
+                            "('" + productDetails.item.getTitle() + "', " +
+                            "'" + productDetails.item.getDescription() + "', " +
+                            "'" + productDetails.item.getPicture() + ", " +
+                            "'pending')"
+            );
+
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            generatedKeys.next();
+            int newItemId = generatedKeys.getInt("id");
+
+            // Add Item Attributes
+            if(affectedRows == 1 && productDetails.itemAttributesDetails.size() > 0) {
+
+                affectedRows = 0;
+                String valuesQuery = "";
+
+                for(ItemAttributesDetails attribute : productDetails.itemAttributesDetails) {
+                    if(valuesQuery.length() > 0) {
+                        valuesQuery += ", ";
+                    }
+
+                    valuesQuery += "('" + newItemId + "', " +
+                            "'" + attribute.itemAttributeValue.getAttributeId() + "', " +
+                            "'" + attribute.itemAttributeValue.getValue() + "') ";
+                }
+
+                affectedRows = executeUpdate("INSERT INTO items_attributes_values (item_id, attribute_id, value) VALUES " + valuesQuery);
+            }
+
+            // Add Offer
+            if(affectedRows > 0) {
+                executeUpdate(
+                        "INSERT INTO offers " +
+                                "(seller_id, item_id, price, amount, condition, status) " +
+                                "VALUES " +
+                                "('" + user.getId() + "', " +
+                                "'" + newItemId + "', " +
+                                "'" + productDetails.offer.getPrice() + "', " +
+                                "'" + productDetails.offer.getAmount() + "', " +
+                                "'" + productDetails.offer.getCondition() + "', " +
+                                "'pending')"
+                );
+            }
+
+        }catch (SQLException e) {
+            dbCconnection.rollback();
+        }finally {
+            dbCconnection.setAutoCommit(true);
+        }
+
+        return 0;
+
+    }
 
 }

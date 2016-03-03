@@ -21,7 +21,18 @@ public class UserModel extends AbstractModel {
 
     public User getUserById(int id) throws SQLException, ClassNotFoundException {
         ResultSet resultSet = executeQuery("SELECT id, username, email, is_seller, firstname, lastname, status, phone_number, registration_date FROM users WHERE id = " + id);
+        try {
+            OfferModel offerModel = new OfferModel();
+            offerModel.getProductsList("desc", 0, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return fillData(resultSet);
+    }
+
+    public boolean isUsernameExists(String username) throws SQLException, ClassNotFoundException {
+        ResultSet resultSet = executeQuery("SELECT count(1) FROM users WHERE username = '" + username + "'");
+        return resultSet.next();
     }
 
     public User getUserByEmail(String email) throws SQLException, ClassNotFoundException {
@@ -79,16 +90,27 @@ public class UserModel extends AbstractModel {
     public int addUser(String username, String email, String password, String firstname, String lastname, String phoneNumber) throws SQLException, ClassNotFoundException {
 
         if(!validate(username, email, password, firstname, lastname, phoneNumber)) {
-            return 0;
+            throw new IllegalArgumentException();
+        }
+
+        ResultSet resultSet = executeQuery("SELECT COUNT(1) FROM users WHERE username = '" + username + "' OR email = '" + email + "'");
+        if(resultSet.next()) {
+            return -1;
         }
 
         String hashedPassowrd = hashPasword(password);
 
         return executeUpdate(
                 "INSERT INTO users " +
-                        "(username, email, password, firstname, lastname, phone_number) " +
+                        "(username, email, password, firstname, lastname, phone_number, status) " +
                         "VALUES " +
-                        "('" + username + "', '" + email + "', '" + hashedPassowrd + "', '" + firstname + "', '" + lastname + "', '" + phoneNumber + "')"
+                        "('" + username + "'," +
+                        " '" + email + "'," +
+                        " '" + hashedPassowrd + "'," +
+                        " '" + firstname + "'," +
+                        " '" + lastname + "'," +
+                        " '" + phoneNumber + "', " +
+                        " 'unconfirmed')"
         );
 
     }

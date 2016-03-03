@@ -1,4 +1,4 @@
-package com.thaer.jj.model.helpers;
+package com.thaer.jj.model.sets;
 
 import com.thaer.jj.entities.ItemAttribute;
 import com.thaer.jj.entities.ItemAttributeValue;

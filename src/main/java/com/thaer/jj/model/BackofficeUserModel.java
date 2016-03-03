@@ -1,5 +1,7 @@
 package com.thaer.jj.model;
 
+import com.thaer.jj.entities.BackofficeUser;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -11,6 +13,10 @@ public class BackofficeUserModel extends AbstractModel {
 
     public BackofficeUserModel() throws SQLException, ClassNotFoundException, IOException {
         super();
+    }
+
+    public BackofficeUser getBackofficeUserByUsername(String username) {
+        return new BackofficeUser();
     }
 
 

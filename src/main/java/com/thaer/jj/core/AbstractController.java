@@ -1,11 +1,15 @@
 package com.thaer.jj.core;
 
+import com.google.gson.Gson;
+import com.thaer.jj.entities.BackofficeUser;
 import com.thaer.jj.entities.User;
 import com.thaer.jj.model.BackofficeUserModel;
 import com.thaer.jj.model.UserModel;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -13,23 +17,34 @@ import java.sql.SQLException;
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
  * @since February 10, 2016.
  */
-public abstract class AbstractController extends App {
+public abstract class AbstractController {
+
+    @Context
+    public HttpServletRequest request;
 
     @HeaderParam("Authorization")
-    public String authorization;
-
-    public boolean isAuthUser = false;
+    private String authorization;
 
     private User authUser = null;
 
+    private BackofficeUser authBackofficeUser = null;
+
     protected boolean isBackofficeEnv = false;
 
-    /**
-     *
-     * @return
-     */
     public User getAuthUser() {
         return authUser;
+    }
+
+    public BackofficeUser getAuthBackofficeUser() {
+        return authBackofficeUser;
+    }
+
+    public boolean isAuthBackofficeUser() {
+        return authBackofficeUser != null;
+    }
+
+    public boolean isAuthUser() {
+        return authUser != null;
     }
 
     /**
@@ -41,7 +56,7 @@ public abstract class AbstractController extends App {
     @PostConstruct
     public void init() throws SQLException, IOException, ClassNotFoundException {
         if(isBackofficeEnv) {
-            setAuthBackofficeUser();
+            //setAuthBackofficeUser();
         }else {
             setAuthUser();
         }
@@ -57,8 +72,6 @@ public abstract class AbstractController extends App {
         JWTAuth jwtAuth = new JWTAuth();
 
         if (jwtAuth.isUserAuth(authorization, request.getRemoteAddr())) {
-            isAuthUser = true;
-
             UserModel userModel = new UserModel();
             authUser = userModel.getUserByUsername(jwtAuth.getAuthUsername());
         }
@@ -75,12 +88,20 @@ public abstract class AbstractController extends App {
         JWTAuth jwtAuth = new JWTAuth();
 
         if (jwtAuth.isBackofficeUserAuth(authorization, request.getRemoteAddr())) {
-            isAuthUser = true;
-
             BackofficeUserModel backofficeUserModel = new BackofficeUserModel();
-            authUser = backofficeUserModel.getUserByUsername(jwtAuth.getAuthUsername());
+            authBackofficeUser = backofficeUserModel.getBackofficeUserByUsername(jwtAuth.getAuthUsername());
         }
 
+    }
+
+    /**
+     *
+     * @param data
+     * @return
+     */
+    public static String toJson(Object data) {
+        Gson gson = new Gson();
+        return gson.toJson(data);
     }
 
 }

@@ -1,7 +1,6 @@
 package com.thaer.jj.model;
 
-import com.sun.xml.internal.bind.v2.runtime.IllegalAnnotationException;
-import com.thaer.jj.model.helpers.ItemAttributesDetails;
+import com.thaer.jj.model.sets.ItemAttributesDetails;
 
 import java.io.IOException;
 import java.sql.ResultSet;

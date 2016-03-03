@@ -1,4 +1,4 @@
-package com.thaer.jj.model.helpers;
+package com.thaer.jj.model.sets;
 
 import com.thaer.jj.entities.Category;
 import com.thaer.jj.entities.Item;

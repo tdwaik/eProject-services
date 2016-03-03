@@ -6,6 +6,8 @@ import com.thaer.jj.model.UserModel;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
@@ -22,7 +24,8 @@ public class UserController extends MainController {
             UserModel userModel = new UserModel();
             user = userModel.getUserById(userId);
             return Response.ok().type(MediaType.APPLICATION_JSON).entity(toJson(user)).build();
-        } catch (Exception e) {
+        } catch (IOException | SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
             return Response.status(500).build();
         }
 
@@ -39,12 +42,14 @@ public class UserController extends MainController {
 
         try {
             UserModel userModel = new UserModel();
-            if(userModel.addUser(username, email, password, firstname, lastname, phone_number) == 1) {
+            int addResult = userModel.addUser(username, email, password, firstname, lastname, phone_number);
+            if(addResult == 1) {
                 return Response.status(201).build();
             }else {
-                return Response.status(400).build();
+                return Response.status(503).build();
             }
-        } catch (Exception e) {
+        } catch (IOException | SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
             return Response.status(500).build();
         }
 
