@@ -19,25 +19,20 @@ public class JWTAuth {
 
     private String secretKey = null;
 
-    private UserModel userModel;
+    private int authUserId;
 
-    private String authUsername;
-
-    public JWTAuth() throws SQLException, IOException, ClassNotFoundException {
-        userModel = new UserModel();
+    public int getAuthUserId() {
+        return authUserId;
     }
 
-    public String getAuthUsername() {
-        return authUsername;
-    }
+    private String generateAuth(String email, String password, String remoteAddr) throws UnAuthorizedException, SQLException, ClassNotFoundException, IOException {
 
-    private String generateAuth(String email, String password, String remoteAddr) throws UnAuthorizedException, SQLException, ClassNotFoundException {
-
-        if(secretKey != null && secretKey.length() >= 10) {
+        if(secretKey == null || secretKey.length() < 10) {
             throw new IllegalArgumentException();
         }
 
-        String username = userModel.getUsernameByAuth(email.toLowerCase(), password);
+        UserModel userModel = new UserModel();
+        int userId = userModel.getUserIdByAuth(email.toLowerCase(), password);
 
         Date expirationDate = new Date();
         Calendar cal = Calendar.getInstance();
@@ -47,7 +42,7 @@ public class JWTAuth {
 
         String jwtAuthorization = Jwts.builder()
                 .setIssuer(remoteAddr)
-                .setSubject(username)
+                .setSubject(Integer.toString(userId))
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
@@ -67,14 +62,14 @@ public class JWTAuth {
 
         try {
             authorization = "eyJhbGciOiJIUzUxMiJ9." + authorization;
-            String JWTUserName = Jwts.parser()
+            String JWTUserId = Jwts.parser()
                     .requireIssuer(remoteAddr)
                     .setSigningKey(secretKey)
                     .parseClaimsJws(authorization)
                     .getBody()
                     .getSubject();
 
-            authUsername = JWTUserName;
+            authUserId = Integer.parseInt(JWTUserId);
 
             return true;
         } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException e) {

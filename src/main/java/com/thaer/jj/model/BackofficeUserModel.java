@@ -15,7 +15,7 @@ public class BackofficeUserModel extends AbstractModel {
         super();
     }
 
-    public BackofficeUser getBackofficeUserByUsername(String username) {
+    public BackofficeUser getBackofficeUserById(int id) {
         return new BackofficeUser();
     }
 

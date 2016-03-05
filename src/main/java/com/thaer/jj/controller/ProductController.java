@@ -32,13 +32,7 @@ public class ProductController extends MainController {
 
             return Response.ok().entity(toJson(productDetailsList)).build();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return Response.status(500).build();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return Response.status(500).build();
-        } catch (IOException e) {
+        } catch (SQLException | ClassNotFoundException | IOException e) {
             e.printStackTrace();
             return Response.status(500).build();
         }
@@ -58,13 +52,7 @@ public class ProductController extends MainController {
                 return Response.status(400).build();
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return Response.status(500).build();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return Response.status(500).build();
-        } catch (IOException e) {
+        } catch (SQLException | ClassNotFoundException | IOException e) {
             e.printStackTrace();
             return Response.status(500).build();
         }

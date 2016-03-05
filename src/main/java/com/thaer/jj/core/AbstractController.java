@@ -55,11 +55,28 @@ public abstract class AbstractController {
      */
     @PostConstruct
     public void init() throws SQLException, IOException, ClassNotFoundException {
+
+        if(!securityCheckRequist()) {
+            System.exit(400);
+        }
+
         if(isBackofficeEnv) {
             //setAuthBackofficeUser();
         }else {
             setAuthUser();
         }
+    }
+
+    private boolean securityCheckRequist() {
+        if(!"XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            return false;
+        }
+
+        if(!request.getHeader("Origin").matches("http(|s):\\/\\/(|(\\D{1,5}\\.))eproject\\.com")) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -73,7 +90,7 @@ public abstract class AbstractController {
 
         if (jwtAuth.isUserAuth(authorization, request.getRemoteAddr())) {
             UserModel userModel = new UserModel();
-            authUser = userModel.getUserByUsername(jwtAuth.getAuthUsername());
+            authUser = userModel.getUserById(jwtAuth.getAuthUserId());
         }
 
     }
@@ -89,19 +106,19 @@ public abstract class AbstractController {
 
         if (jwtAuth.isBackofficeUserAuth(authorization, request.getRemoteAddr())) {
             BackofficeUserModel backofficeUserModel = new BackofficeUserModel();
-            authBackofficeUser = backofficeUserModel.getBackofficeUserByUsername(jwtAuth.getAuthUsername());
+            authBackofficeUser = backofficeUserModel.getBackofficeUserById(jwtAuth.getAuthUserId());
         }
 
     }
 
     /**
-     *
+     * add ")]}',\n" to prefix of json to JSON Vulnerability Protection
      * @param data
      * @return
      */
     public static String toJson(Object data) {
         Gson gson = new Gson();
-        return gson.toJson(data);
+        return ")]}',\n" + gson.toJson(data);
     }
 
 }

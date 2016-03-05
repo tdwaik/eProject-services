@@ -13,23 +13,21 @@ import java.sql.SQLException;
  * @since February 11, 2016.
  */
 
-    @Path("usersAuth")
+@Path("usersAuth")
 public class UserAuthController extends MainController {
 
     @POST @Path("/login")
     public Response login(@FormParam("email") String email, @FormParam("password") String password) {
-
         try {
-
             JWTAuth jwtAuth = new JWTAuth();
-
             String jwtAuthorization = jwtAuth.generateUserAuth(email, password, request.getRemoteAddr());
 
             return Response.accepted().header("Authorization", jwtAuthorization).build();
 
         }catch (UnAuthorizedException e) {
             return Response.status(401).build();
-
+        }catch (IllegalArgumentException e) {
+            return Response.status(400).build();
         }catch (IOException | SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return Response.status(500).build();

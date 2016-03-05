@@ -40,22 +40,17 @@ public class UserModel extends AbstractModel {
         return fillData(resultSet);
     }
 
-    public User getUserByUsername(String username) throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = executeQuery("SELECT id, username, email, is_seller, firstname, lastname, status, phone_number, registration_date FROM users WHERE username = '" + username + "'");
-        return fillData(resultSet);
-    }
-
-    public String getUsernameByAuth(String email, String password) throws UnAuthorizedException, SQLException, ClassNotFoundException {
+    public int getUserIdByAuth(String email, String password) throws UnAuthorizedException, SQLException, ClassNotFoundException {
 
         if(!Validator.checkEmail(email)) {
             throw new IllegalArgumentException();
         }
 
-        ResultSet resultSet = executeQuery("SELECT password, username FROM users WHERE email = '" + email + "'");
+        ResultSet resultSet = executeQuery("SELECT id, password FROM users WHERE email = '" + email + "'");
 
         if (resultSet.next()) {
             if(checkPassword(password, resultSet.getString("password"))) {
-                return resultSet.getString("username");
+                return resultSet.getInt("id");
             }else {
                 throw new UnAuthorizedException();
             }
@@ -71,7 +66,6 @@ public class UserModel extends AbstractModel {
 
         if(resultSet.next()) {
             user.setId(resultSet.getInt("id"));
-            user.setUsername(resultSet.getString("username"));
             user.setEmail(resultSet.getString("email"));
             user.setStatus(resultSet.getString("status"));
             user.setIsSeller(resultSet.getBoolean("is_seller"));
@@ -87,30 +81,30 @@ public class UserModel extends AbstractModel {
 
     }
 
-    public int addUser(String username, String email, String password, String firstname, String lastname, String phoneNumber) throws SQLException, ClassNotFoundException {
+    public int addUser(String email, String password, String firstname, String lastname) throws SQLException, ClassNotFoundException {
 
-        if(!validate(username, email, password, firstname, lastname, phoneNumber)) {
+        if(!validate(email, password, firstname, lastname)) {
             throw new IllegalArgumentException();
         }
 
-        ResultSet resultSet = executeQuery("SELECT COUNT(1) FROM users WHERE username = '" + username + "' OR email = '" + email + "'");
-        if(resultSet.next()) {
+        ResultSet resultSet = executeQuery("SELECT COUNT(1) row_count FROM users WHERE email = '" + email + "'");
+        resultSet.next();
+        if(resultSet.getInt("row_count") > 0) {
             return -1;
         }
+
 
         String hashedPassowrd = hashPasword(password);
 
         return executeUpdate(
                 "INSERT INTO users " +
-                        "(username, email, password, firstname, lastname, phone_number, status) " +
+                        "(email, password, firstname, lastname, status) " +
                         "VALUES " +
-                        "('" + username + "'," +
-                        " '" + email + "'," +
+                        "('" + email + "'," +
                         " '" + hashedPassowrd + "'," +
                         " '" + firstname + "'," +
                         " '" + lastname + "'," +
-                        " '" + phoneNumber + "', " +
-                        " 'unconfirmed')"
+                        " 'unconfirmed_email')"
         );
 
     }
@@ -123,8 +117,8 @@ public class UserModel extends AbstractModel {
         return BCrypt.checkpw(candidate, hashed);
     }
 
-    public boolean validate(String username, String email, String password, String firstname, String lastname, String phoneNumber) {
-        if(username == null || username.length() < 3 || firstname == null || firstname.length() < 3 || lastname == null || lastname.length() < 3) {
+    public boolean validate(String email, String password, String firstname, String lastname) {
+        if(firstname == null || firstname.length() < 3 || lastname == null || lastname.length() < 3) {
             return false;
         }
 
@@ -133,10 +127,6 @@ public class UserModel extends AbstractModel {
         }
 
         if(!Validator.checkEmail(email)) {
-            return false;
-        }
-
-        if(!Validator.checkPhoneNumber(phoneNumber)) {
             return false;
         }
 
