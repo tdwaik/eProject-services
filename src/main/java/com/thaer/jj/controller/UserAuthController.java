@@ -17,10 +17,10 @@ import java.sql.SQLException;
 public class UserAuthController extends MainController {
 
     @POST @Path("/login")
-    public Response login(@FormParam("email") String email, @FormParam("password") String password) {
+    public Response login(@FormParam("email") String email, @FormParam("password") String password, @FormParam("rememberMe") boolean rememberMe) {
         try {
             JWTAuth jwtAuth = new JWTAuth();
-            String jwtAuthorization = jwtAuth.generateUserAuth(email, password, request.getRemoteAddr());
+            String jwtAuthorization = jwtAuth.generateUserAuth(email, password, request.getRemoteAddr(), rememberMe);
 
             return Response.accepted().header("Authorization", jwtAuthorization).build();
 
@@ -39,9 +39,9 @@ public class UserAuthController extends MainController {
     public Response isLogin() {
 
         if(isAuthUser()) {
-            return Response.status(401).build();
-        }else {
             return Response.ok().build();
+        }else {
+            return Response.status(401).build();
         }
 
     }

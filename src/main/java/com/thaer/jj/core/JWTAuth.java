@@ -7,6 +7,8 @@ import io.jsonwebtoken.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,7 +27,7 @@ public class JWTAuth {
         return authUserId;
     }
 
-    private String generateAuth(String email, String password, String remoteAddr) throws UnAuthorizedException, SQLException, ClassNotFoundException, IOException {
+    private String generateAuth(String email, String password, String remoteAddr, boolean rememberMe) throws UnAuthorizedException, SQLException, ClassNotFoundException, IOException {
 
         if(secretKey == null || secretKey.length() < 10) {
             throw new IllegalArgumentException();
@@ -34,18 +36,25 @@ public class JWTAuth {
         UserModel userModel = new UserModel();
         int userId = userModel.getUserIdByAuth(email.toLowerCase(), password);
 
-        Date expirationDate = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(expirationDate);
-        cal.add(Calendar.HOUR_OF_DAY, 1);
-        expirationDate = cal.getTime();
-
-        String jwtAuthorization = Jwts.builder()
+        JwtBuilder jwtBuilder = Jwts.builder()
                 .setIssuer(remoteAddr)
                 .setSubject(Integer.toString(userId))
-                .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS512, secretKey)
-                .compact();
+                .signWith(SignatureAlgorithm.HS512, secretKey);
+
+        Date date = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        jwtBuilder.setIssuedAt(cal.getTime());
+
+        if(!rememberMe) {
+            cal.add(Calendar.HOUR_OF_DAY, 1);
+            date = cal.getTime();
+
+            jwtBuilder.setExpiration(date);
+        }
+
+        String jwtAuthorization = jwtBuilder.compact();
 
         String[] jwtAuthorizationParts = jwtAuthorization.split("\\.");
 
@@ -79,12 +88,12 @@ public class JWTAuth {
 
     public String generateBackofficeUserAuth(String email, String password, String remoteAddr) throws IOException, ClassNotFoundException, UnAuthorizedException, SQLException {
         secretKey = Config.getConfig("jwt.secret");
-        return generateAuth(email, password, remoteAddr);
+        return generateAuth(email, password, remoteAddr, false);
     }
 
-    public String generateUserAuth(String email, String password, String remoteAddr) throws UnAuthorizedException, IOException, SQLException, ClassNotFoundException {
+    public String generateUserAuth(String email, String password, String remoteAddr, boolean rememberMe) throws UnAuthorizedException, IOException, SQLException, ClassNotFoundException {
         secretKey = Config.getConfig("backoffice.jwt.secret");
-        return generateAuth(email, password, remoteAddr);
+        return generateAuth(email, password, remoteAddr, rememberMe);
     }
 
     public boolean isUserAuth(String authorization, String remoteAddr) throws IOException {
