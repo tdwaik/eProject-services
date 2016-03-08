@@ -13,10 +13,10 @@ import java.util.ArrayList;
  */
 public class ItemAttributeModel extends AbstractModel {
 
-    public ItemAttributeModel() throws SQLException, ClassNotFoundException, IOException {
+    public ItemAttributeModel() throws SQLException {
     }
 
-    public ArrayList<ItemAttributesDetails> getItemAttributes(int itemId) throws SQLException, ClassNotFoundException {
+    public ArrayList<ItemAttributesDetails> getItemAttributes(int itemId) throws SQLException {
         ResultSet resultSet = executeQuery("SELECT * FROM items_attributes_values iav INNER JOIN items_attributes ia ON iav.attribute_id = ia.id  WHERE iav.item_id = " + itemId);
 
         ArrayList<ItemAttributesDetails> itemAttributesList = new ArrayList<>();

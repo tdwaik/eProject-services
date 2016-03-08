@@ -1,7 +1,9 @@
 package com.thaer.jj.core;
 
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.server.ResourceConfig;
+
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
 
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
@@ -9,6 +11,11 @@ import javax.ws.rs.core.Application;
  */
 
 @ApplicationPath("/")
-public class JerseyApp extends Application {
+public class JerseyApp extends ResourceConfig {
+
+    public JerseyApp() {
+        packages("com.thaer.jj");
+        register(MultiPartFeature.class);
+    }
 
 }

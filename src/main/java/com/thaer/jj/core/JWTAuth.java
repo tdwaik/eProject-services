@@ -5,10 +5,7 @@ import com.thaer.jj.exceptions.UnAuthorizedException;
 import com.thaer.jj.model.UserModel;
 import io.jsonwebtoken.*;
 
-import java.io.IOException;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -27,7 +24,7 @@ public class JWTAuth {
         return authUserId;
     }
 
-    private String generateAuth(String email, String password, String remoteAddr, boolean rememberMe) throws UnAuthorizedException, SQLException, ClassNotFoundException, IOException {
+    private String generateAuth(String email, String password, String remoteAddr, boolean rememberMe) throws UnAuthorizedException, SQLException {
 
         if(secretKey == null || secretKey.length() < 10) {
             throw new IllegalArgumentException();
@@ -64,7 +61,7 @@ public class JWTAuth {
 
     }
 
-    private boolean isAuth(String authorization, String remoteAddr) throws IOException {
+    private boolean isAuth(String authorization, String remoteAddr) {
         if(authorization == null || authorization.isEmpty()) {
             return false;
         }
@@ -86,22 +83,22 @@ public class JWTAuth {
         }
     }
 
-    public String generateBackofficeUserAuth(String email, String password, String remoteAddr) throws IOException, ClassNotFoundException, UnAuthorizedException, SQLException {
-        secretKey = Config.getConfig("jwt.secret");
+    public String generateBackofficeUserAuth(String email, String password, String remoteAddr) throws UnAuthorizedException, SQLException {
+        secretKey = Config.getConfig("backoffice.jwt.secret");
         return generateAuth(email, password, remoteAddr, false);
     }
 
-    public String generateUserAuth(String email, String password, String remoteAddr, boolean rememberMe) throws UnAuthorizedException, IOException, SQLException, ClassNotFoundException {
-        secretKey = Config.getConfig("backoffice.jwt.secret");
+    public String generateUserAuth(String email, String password, String remoteAddr, boolean rememberMe) throws UnAuthorizedException, SQLException {
+        secretKey = Config.getConfig("jwt.secret");
         return generateAuth(email, password, remoteAddr, rememberMe);
     }
 
-    public boolean isUserAuth(String authorization, String remoteAddr) throws IOException {
+    public boolean isUserAuth(String authorization, String remoteAddr) {
         secretKey = Config.getConfig("jwt.secret");
         return isAuth(authorization, remoteAddr);
     }
 
-    public boolean isBackofficeUserAuth(String authorization, String remoteAddr) throws IOException {
+    public boolean isBackofficeUserAuth(String authorization, String remoteAddr) {
         secretKey = Config.getConfig("backoffice.jwt.secret");
         return isAuth(authorization, remoteAddr);
     }

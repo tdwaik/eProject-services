@@ -15,18 +15,12 @@ import java.sql.SQLException;
  */
 public class UserModel extends AbstractModel {
 
-    public UserModel() throws SQLException, ClassNotFoundException, IOException {
+    public UserModel() throws SQLException {
         super();
     }
 
-    public User getUserById(int id) throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = executeQuery("SELECT id, username, email, is_seller, firstname, lastname, status, phone_number, registration_date FROM users WHERE id = " + id);
-        try {
-            OfferModel offerModel = new OfferModel();
-            offerModel.getProductsList("desc", 0, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public User getUserById(int id) throws SQLException {
+        ResultSet resultSet = executeQuery("SELECT id, email, is_seller, firstname, lastname, status, phone_number, registration_date FROM users WHERE id = " + id);
         return fillData(resultSet);
     }
 
@@ -36,11 +30,11 @@ public class UserModel extends AbstractModel {
     }
 
     public User getUserByEmail(String email) throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = executeQuery("SELECT id, username, email, is_seller, firstname, lastname, status, phone_number, registration_date FROM users WHERE email = '" + email + "'");
+        ResultSet resultSet = executeQuery("SELECT id, email, is_seller, firstname, lastname, status, phone_number, registration_date FROM users WHERE email = '" + email + "'");
         return fillData(resultSet);
     }
 
-    public int getUserIdByAuth(String email, String password) throws UnAuthorizedException, SQLException, ClassNotFoundException {
+    public int getUserIdByAuth(String email, String password) throws UnAuthorizedException, SQLException, IllegalArgumentException {
 
         if(!Validator.checkEmail(email)) {
             throw new IllegalArgumentException();
@@ -81,7 +75,7 @@ public class UserModel extends AbstractModel {
 
     }
 
-    public int addUser(String email, String password, String firstname, String lastname) throws SQLException, ClassNotFoundException {
+    public int addUser(String email, String password, String firstname, String lastname) throws SQLException {
 
         if(!validate(email, password, firstname, lastname)) {
             throw new IllegalArgumentException();

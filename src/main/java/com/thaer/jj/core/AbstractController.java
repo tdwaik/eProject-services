@@ -54,7 +54,7 @@ public abstract class AbstractController {
      * @throws ClassNotFoundException
      */
     @PostConstruct
-    public void init() throws SQLException, IOException, ClassNotFoundException {
+    public void init() throws SQLException {
 
         if(!securityCheckRequist()) {
             System.exit(400);
@@ -85,7 +85,7 @@ public abstract class AbstractController {
      * @throws SQLException
      * @throws ClassNotFoundException
      */
-    private void setAuthUser() throws IOException, SQLException, ClassNotFoundException {
+    private void setAuthUser() throws SQLException {
         JWTAuth jwtAuth = new JWTAuth();
 
         if (jwtAuth.isUserAuth(authorization, request.getRemoteAddr())) {
@@ -101,7 +101,7 @@ public abstract class AbstractController {
      * @throws SQLException
      * @throws ClassNotFoundException
      */
-    private void setAuthBackofficeUser() throws IOException, SQLException, ClassNotFoundException {
+    private void setAuthBackofficeUser() throws SQLException {
         JWTAuth jwtAuth = new JWTAuth();
 
         if (jwtAuth.isBackofficeUserAuth(authorization, request.getRemoteAddr())) {

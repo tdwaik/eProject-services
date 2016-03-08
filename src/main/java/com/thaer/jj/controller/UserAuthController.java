@@ -5,7 +5,6 @@ import com.thaer.jj.exceptions.UnAuthorizedException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -28,7 +27,7 @@ public class UserAuthController extends MainController {
             return Response.status(401).build();
         }catch (IllegalArgumentException e) {
             return Response.status(400).build();
-        }catch (IOException | SQLException | ClassNotFoundException e) {
+        }catch (SQLException e) {
             e.printStackTrace();
             return Response.status(500).build();
         }

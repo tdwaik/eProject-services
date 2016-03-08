@@ -11,7 +11,7 @@ import java.sql.SQLException;
  */
 public class BackofficeUserModel extends AbstractModel {
 
-    public BackofficeUserModel() throws SQLException, ClassNotFoundException, IOException {
+    public BackofficeUserModel() throws SQLException {
         super();
     }
 

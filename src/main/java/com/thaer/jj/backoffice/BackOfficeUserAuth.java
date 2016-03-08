@@ -7,7 +7,6 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -31,8 +30,8 @@ public class BackOfficeUserAuth extends BackOfficeController {
 
         }catch (UnAuthorizedException e) {
             return Response.status(401).build();
-
-        }catch (IOException | SQLException | ClassNotFoundException e) {
+        }catch (SQLException e) {
+            e.printStackTrace();
             return Response.status(500).build();
         }
 

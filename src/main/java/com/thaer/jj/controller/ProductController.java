@@ -1,15 +1,19 @@
 package com.thaer.jj.controller;
 
 import com.thaer.jj.model.OfferModel;
+import com.thaer.jj.model.ProductModel;
+import com.thaer.jj.model.sets.ItemAttributesDetails;
 import com.thaer.jj.model.sets.ProductDetails;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
@@ -20,7 +24,7 @@ public class ProductController extends MainController {
 
     private OfferModel offerModel;
 
-    public ProductController() throws SQLException, IOException, ClassNotFoundException {
+    public ProductController() throws SQLException {
         offerModel = new OfferModel();
     }
 
@@ -32,7 +36,7 @@ public class ProductController extends MainController {
 
             return Response.ok().entity(toJson(productDetailsList)).build();
 
-        } catch (SQLException | ClassNotFoundException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return Response.status(500).build();
         }
@@ -41,18 +45,68 @@ public class ProductController extends MainController {
 
     @GET
     @Path("/{offerId}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getProductDetails(@PathParam("offerId") int offerId) {
         try {
 
             if(offerId > 0) {
                 ProductDetails productDetailsDetails = offerModel.getProductDetails(offerId);
                 return Response.ok().entity(toJson(productDetailsDetails)).build();
-
             }else {
                 return Response.status(400).build();
             }
 
-        } catch (SQLException | ClassNotFoundException | IOException e) {
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Response.status(500).build();
+        }
+
+    }
+
+    @POST @Path("/add")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response addProduct(
+            @FormDataParam("offerPrice") int offerPrice,
+            @FormDataParam("offerAmount") int offerAmount,
+            @FormDataParam("itemTitle") String itemTitle,
+            @FormDataParam("itemDescription") String itemDescription,
+            @FormDataParam("itemCategoryId") int itemCategoryId,
+            @FormDataParam("file") InputStream fileInputStream,
+            @FormDataParam("file") FormDataContentDisposition fileMetaData
+    ) {
+
+        try {
+            ProductModel productModel = new ProductModel();
+            ProductDetails productDetails = new ProductDetails();
+
+            Random random = new Random();
+            String pictureFileName = random.nextInt() + "_" + fileMetaData.getFileName();
+
+            productDetails.offer.setPrice(offerPrice);
+            productDetails.offer.setAmount(offerAmount);
+            productDetails.offer.setCondition("new");
+
+            productDetails.item.setTitle(itemTitle);
+            productDetails.item.setDescription(itemDescription);
+            productDetails.item.setCategoryId(itemCategoryId);
+            productDetails.item.setPicture(pictureFileName);
+
+            ItemAttributesDetails itemAttributesDetails = new ItemAttributesDetails();
+            itemAttributesDetails.itemAttributeValue.setAttributeId(1);
+            itemAttributesDetails.itemAttributeValue.setValue("test");
+            productDetails.itemAttributesDetails.add(itemAttributesDetails);
+
+            if(getAuthUser() == null) {
+                return Response.status(401).build();
+            }
+
+            if(productModel.addProduct(getAuthUser(), productDetails)) {
+                return Response.status(201).build();
+            }else {
+                return Response.ok().build();
+            }
+
+        } catch (SQLException e) {
             e.printStackTrace();
             return Response.status(500).build();
         }

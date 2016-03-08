@@ -12,6 +12,8 @@ public class Offer {
 
     private int userId;
 
+    private int itemId;
+
     private int price;
 
     private int amount;
@@ -40,6 +42,14 @@ public class Offer {
     public Offer setUserId(int userId) {
         this.userId = userId;
         return this;
+    }
+
+    public int getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
     }
 
     public int getPrice() {
@@ -95,4 +105,5 @@ public class Offer {
         this.lastUpdate = lastUpdate;
         return this;
     }
+
 }

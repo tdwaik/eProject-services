@@ -8,6 +8,8 @@ public class Item {
 
     private int id;
 
+    private int categoryId;
+
     private String title;
 
     private String description;
@@ -23,6 +25,14 @@ public class Item {
     public Item setId(int id) {
         this.id = id;
         return this;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getTitle() {

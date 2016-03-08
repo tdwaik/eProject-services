@@ -15,14 +15,20 @@ public class Config {
 
     private static Properties prop = null;
 
-    public static String getConfig(String key) throws IOException {
+    public static String getConfig(String key) {
 
         if(input == null) {
-            input = new FileInputStream(App.PATH + "/WEB-INF/classes/config/config.properties");
+            try {
+                input = new FileInputStream(App.PATH + "/WEB-INF/classes/config/config.properties");
 
-            // load a properties file
-            prop = new Properties();
-            prop.load(input);
+                // load a properties file
+                prop = new Properties();
+                prop.load(input);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(500);
+            }
         }
 
         return prop.getProperty(key);

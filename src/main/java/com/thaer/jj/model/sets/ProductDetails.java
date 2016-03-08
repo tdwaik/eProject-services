@@ -24,6 +24,7 @@ public class ProductDetails {
         offer       = new Offer();
         item        = new Item();
         category    = new Category();
+        itemAttributesDetails = new ArrayList<>();
     }
 
 }

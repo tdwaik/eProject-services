@@ -3,10 +3,7 @@ package com.thaer.jj.model;
 import com.thaer.jj.core.Dependencies;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
@@ -18,7 +15,9 @@ public abstract class AbstractModel {
 
     public Statement statement;
 
-    public AbstractModel() throws SQLException, ClassNotFoundException, IOException {
+    public PreparedStatement preparedStatement;
+
+    public AbstractModel() throws SQLException {
         dbCconnection = Dependencies.Mysql();
         statement = dbCconnection.createStatement();
     }
@@ -28,7 +27,9 @@ public abstract class AbstractModel {
     }
 
     public int executeUpdate(String query) throws SQLException {
-        return statement.executeUpdate(query);
+        PreparedStatement preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        this.preparedStatement = preparedStatement;
+        return preparedStatement.executeUpdate();
     }
 
 }

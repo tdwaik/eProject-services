@@ -5,7 +5,6 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
 
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
@@ -15,7 +14,7 @@ import java.io.IOException;
 public class CORSResponseFilter implements ContainerResponseFilter {
 
     @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
 
         MultivaluedMap<String, Object> headers = responseContext.getHeaders();
 

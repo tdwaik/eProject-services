@@ -6,7 +6,6 @@ import com.thaer.jj.model.UserModel;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -23,7 +22,7 @@ public class UserController extends MainController {
             UserModel userModel = new UserModel();
             User user = userModel.getUserById(userId);
             return Response.ok().type(MediaType.APPLICATION_JSON).entity(toJson(user)).build();
-        } catch (IOException | SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return Response.status(500).build();
         }
@@ -47,7 +46,7 @@ public class UserController extends MainController {
             }
         }catch (IllegalArgumentException e) {
             return Response.status(400).build();
-        }catch (IOException | SQLException | ClassNotFoundException e) {
+        }catch (SQLException e) {
             e.printStackTrace();
             return Response.status(500).build();
         }
