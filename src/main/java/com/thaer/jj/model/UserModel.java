@@ -5,7 +5,6 @@ import com.thaer.jj.core.lib.Validator;
 import com.thaer.jj.entities.User;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

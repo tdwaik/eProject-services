@@ -2,7 +2,6 @@ package com.thaer.jj.model;
 
 import com.thaer.jj.model.sets.ItemAttributesDetails;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -28,7 +28,7 @@ public class Dependencies {
                         .connect();
             } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
-                System.exit(500);
+                System.exit(-1);
             }
         }
 

@@ -5,7 +5,6 @@ import com.thaer.jj.entities.User;
 import com.thaer.jj.model.sets.ItemAttributesDetails;
 import com.thaer.jj.model.sets.ProductDetails;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

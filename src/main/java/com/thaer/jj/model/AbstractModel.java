@@ -2,7 +2,6 @@ package com.thaer.jj.model;
 
 import com.thaer.jj.core.Dependencies;
 
-import java.io.IOException;
 import java.sql.*;
 
 /**
