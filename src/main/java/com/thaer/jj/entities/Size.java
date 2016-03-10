@@ -2,19 +2,21 @@ package com.thaer.jj.entities;
 
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
- * @since Feb 28, 2016.
+ * @since March 10, 2016.
  */
-public class ItemAttribute {
+public class Size {
 
     private int id;
 
     private String name;
 
+    private String type;
+
     public int getId() {
         return id;
     }
 
-    public ItemAttribute setId(int id) {
+    public Size setId(int id) {
         this.id = id;
         return this;
     }
@@ -23,8 +25,17 @@ public class ItemAttribute {
         return name;
     }
 
-    public ItemAttribute setName(String name) {
+    public Size setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public Size setType(String type) {
+        this.type = type;
         return this;
     }
 }

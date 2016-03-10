@@ -1,8 +1,5 @@
 package com.thaer.jj.controller;
 
-import com.thaer.jj.model.OfferModel;
-import com.thaer.jj.model.ProductModel;
-import com.thaer.jj.model.sets.ItemAttributesDetails;
 import com.thaer.jj.model.sets.ProductDetails;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -82,14 +79,14 @@ public class ProductController extends MainController {
             Random random = new Random();
             String pictureFileName = random.nextInt() + "_" + fileMetaData.getFileName();
 
-            productDetails.offer.setPrice(offerPrice);
-            productDetails.offer.setAmount(offerAmount);
-            productDetails.offer.setCondition("new");
+            productDetails.offerOption.setPrice(offerPrice);
+            productDetails.offerOption.setAmount(offerAmount);
+            productDetails.offerOption.setCondition("new");
 
-            productDetails.item.setTitle(itemTitle);
-            productDetails.item.setDescription(itemDescription);
-            productDetails.item.setCategoryId(itemCategoryId);
-            productDetails.item.setPicture(pictureFileName);
+            productDetails.offer.setTitle(itemTitle);
+            productDetails.offer.setDescription(itemDescription);
+            productDetails.offer.setCategoryId(itemCategoryId);
+            productDetails.offer.setPicture(pictureFileName);
 
             ItemAttributesDetails itemAttributesDetails = new ItemAttributesDetails();
             itemAttributesDetails.itemAttributeValue.setAttributeId(1);

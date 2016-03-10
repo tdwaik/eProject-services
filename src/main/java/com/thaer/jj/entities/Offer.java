@@ -10,15 +10,13 @@ public class Offer {
 
     private int id;
 
-    private int userId;
+    private int seller_id;
 
-    private int itemId;
+    private int brand_id;
 
-    private int price;
+    private int categoryId;
 
-    private int amount;
-
-    private String condition;
+    private String description;
 
     private String status;
 
@@ -35,47 +33,38 @@ public class Offer {
         return this;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getSeller_id() {
+        return seller_id;
     }
 
-    public Offer setUserId(int userId) {
-        this.userId = userId;
+    public Offer setSeller_id(int seller_id) {
+        this.seller_id = seller_id;
         return this;
     }
 
-    public int getItemId() {
-        return itemId;
+    public int getBrand_id() {
+        return brand_id;
     }
 
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public Offer setPrice(int price) {
-        this.price = price;
+    public Offer setBrand_id(int brand_id) {
+        this.brand_id = brand_id;
         return this;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getCategoryId() {
+        return categoryId;
     }
 
-    public Offer setAmount(int amount) {
-        this.amount = amount;
-        return this;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public String getCondition() {
-        return condition;
+    public String getDescription() {
+        return description;
     }
 
-    public Offer setCondition(String condition) {
-        this.condition = condition;
+    public Offer setDescription(String description) {
+        this.description = description;
         return this;
     }
 
@@ -105,5 +94,4 @@ public class Offer {
         this.lastUpdate = lastUpdate;
         return this;
     }
-
 }

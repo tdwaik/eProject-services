@@ -1,8 +1,8 @@
 package com.thaer.jj.model.sets;
 
 import com.thaer.jj.entities.Category;
-import com.thaer.jj.entities.Item;
 import com.thaer.jj.entities.Offer;
+import com.thaer.jj.entities.OfferOption;
 
 import java.util.ArrayList;
 
@@ -12,17 +12,17 @@ import java.util.ArrayList;
  */
 public class ProductDetails {
 
-    public Offer offer;
+    public OfferOption offerOption;
 
-    public Item item;
+    public Offer offer;
 
     public Category category;
 
     public ArrayList<ItemAttributesDetails> itemAttributesDetails;
 
     public ProductDetails() {
-        offer       = new Offer();
-        item        = new Item();
+        offerOption = new OfferOption();
+        offer = new Offer();
         category    = new Category();
         itemAttributesDetails = new ArrayList<>();
     }
