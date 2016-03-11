@@ -12,22 +12,19 @@ public abstract class AbstractModel {
 
     public Connection dbCconnection;
 
-    public Statement statement;
-
     public PreparedStatement preparedStatement;
 
     public AbstractModel() throws SQLException {
         dbCconnection = Dependencies.Mysql();
-        statement = dbCconnection.createStatement();
     }
 
     public ResultSet executeQuery(String query) throws SQLException {
-        return statement.executeQuery(query);
+        preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        return preparedStatement.executeQuery();
     }
 
     public int executeUpdate(String query) throws SQLException {
-        PreparedStatement preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-        this.preparedStatement = preparedStatement;
+        preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         return preparedStatement.executeUpdate();
     }
 

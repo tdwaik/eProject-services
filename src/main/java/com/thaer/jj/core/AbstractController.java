@@ -57,7 +57,7 @@ public abstract class AbstractController {
     public void init() throws SQLException {
 
         if(!securityCheckRequist()) {
-            System.exit(-1);
+            //System.exit(-1);
         }
 
         if(isBackofficeEnv) {
