@@ -42,7 +42,7 @@ public class UserController extends MainController {
             if(addResult == 1) {
                 return Response.status(201).build();
             }else {
-                return Response.status(503).build();
+                return Response.status(400).build();
             }
         }catch (IllegalArgumentException e) {
             return Response.status(400).build();

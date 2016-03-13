@@ -2,8 +2,10 @@ package com.thaer.jj.model;
 
 import com.thaer.jj.entities.Category;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -35,6 +37,28 @@ public class CategoryModel extends AbstractModel {
 
     public ArrayList<Category> getSubCategoriesList(int subOf) throws SQLException {
         return getCategoriesList(null, false, subOf);
+    }
+
+    public int addCategory(Category category) throws SQLException, IllegalArgumentException {
+
+        if(category.getName().length() < 2) {
+            throw new IllegalArgumentException();
+        }
+
+
+        PreparedStatement preparedStatement = dbCconnection.prepareStatement("INSERT INTO categories (`is_main`, `sub_of`, `name`) VALUES (? , ?, ?)", Statement.RETURN_GENERATED_KEYS);
+        preparedStatement.setBoolean(1, category.getIsMain());
+        preparedStatement.setInt(2, category.getSubOf());
+        preparedStatement.setString(3, category.getName());
+        preparedStatement.executeUpdate();
+
+        ResultSet resultSet = preparedStatement.getGeneratedKeys();
+
+        if(resultSet.next()) {
+            return resultSet.getInt(1);
+        }else {
+            throw new IllegalArgumentException();
+        }
     }
 
     private String getWhere(Integer id, Boolean isMain, Integer subOf) {

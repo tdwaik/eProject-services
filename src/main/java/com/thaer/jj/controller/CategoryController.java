@@ -3,12 +3,13 @@ package com.thaer.jj.controller;
 import com.thaer.jj.entities.Category;
 import com.thaer.jj.model.CategoryModel;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
@@ -30,14 +31,33 @@ public class CategoryController extends MainController {
         }
     }
 
-    @GET
-    @Path("/all")
-    public Response getAllCategories() {
+    @PUT
+    @Path("/")
+    public Response addCategory(@FormParam("name") String name, @FormParam("isMain") boolean isMain, @FormParam("subOf") int subOf) {
+        try {
 
-        HashMap<String, Object> cat = new HashMap<>();
-        cat.put("Dresses", 3);
-        cat.put("Jackets & Coats", 4);
-        return Response.ok().entity(toJson(cat)).build();
+            if(getAuthBackofficeUser() == null) {
+                return Response.status(401).build();
+            }
+
+            Category category = new Category();
+            category.setName(name);
+            category.setIsMain(isMain);
+            category.setSubOf(subOf);
+
+            CategoryModel categoryModel = new CategoryModel();
+            if(categoryModel.addCategory(category) > 0) {
+                return Response.status(201).build();
+            }else {
+                return Response.status(400).build();
+            }
+
+        }catch (IllegalArgumentException e) {
+            return Response.status(400).build();
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return Response.status(500).build();
+        }
     }
 
 }
