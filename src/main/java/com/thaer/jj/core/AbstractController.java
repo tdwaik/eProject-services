@@ -57,7 +57,7 @@ public abstract class AbstractController {
     public void init() throws SQLException {
 
         if(!securityCheckRequist()) {
-            //System.exit(-1);
+            System.exit(-1);
         }
 
         if(isBackofficeEnv) {
@@ -72,7 +72,7 @@ public abstract class AbstractController {
             return false;
         }
 
-        if(!request.getHeader("Origin").matches("http(|s):\\/\\/(|(\\D{1,5}\\.))eproject\\.com")) {
+        if(!request.getHeader("Origin").matches("http(|s):\\/\\/(|(\\D{1,10}\\.))eproject\\.com")) {
             return false;
         }
 

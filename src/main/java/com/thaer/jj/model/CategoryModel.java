@@ -45,7 +45,7 @@ public class CategoryModel extends AbstractModel {
         }
 
         if(isMain != null) {
-            where += "c.is_main = " + (isMain? "'true'" : "0");
+            where += "c.is_main = " + (isMain? "1" : "0");
         }
 
         if(subOf != null) {
@@ -64,7 +64,7 @@ public class CategoryModel extends AbstractModel {
             category.setId(resultSet.getInt("c.id"));
             category.setSubOf(resultSet.getInt("c.sub_of"));
             category.setName(resultSet.getString("c.name"));
-            category.setIsMain(resultSet.getBoolean("c.isMain"));
+            category.setIsMain(resultSet.getBoolean("c.is_main"));
 
             categories.add(category);
         }
