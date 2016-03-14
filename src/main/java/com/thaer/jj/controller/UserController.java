@@ -16,17 +16,14 @@ import java.sql.SQLException;
 @Path("users")
 public class UserController extends MainController {
 
-    @GET @Path("/{userId:\\d+}")
-    public Response getUser(@PathParam("userId") int userId) {
-        try {
-            UserModel userModel = new UserModel();
-            User user = userModel.getUserById(userId);
-            return Response.ok().type(MediaType.APPLICATION_JSON).entity(toJson(user)).build();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return Response.status(500).build();
+    @GET @Path("/authUser")
+    public Response getUser() {
+        User authUser = getAuthUser();
+        if(authUser == null) {
+            return Response.status(401).build();
         }
 
+        return Response.ok().type(MediaType.APPLICATION_JSON).entity(toJson(getAuthUser())).build();
     }
 
     @PUT @Path("/addUser")

@@ -19,17 +19,7 @@ public class UserModel extends AbstractModel {
     }
 
     public User getUserById(int id) throws SQLException {
-        ResultSet resultSet = executeQuery("SELECT id, email, is_seller, firstname, lastname, status, phone_number, registration_date FROM users WHERE id = " + id);
-        return fillData(resultSet);
-    }
-
-    public boolean isUsernameExists(String username) throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = executeQuery("SELECT count(1) FROM users WHERE username = '" + username + "'");
-        return resultSet.next();
-    }
-
-    public User getUserByEmail(String email) throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = executeQuery("SELECT id, email, is_seller, firstname, lastname, status, phone_number, registration_date FROM users WHERE email = '" + email + "'");
+        ResultSet resultSet = executeQuery("SELECT id, firstname, lastname, status, phone_number, is_seller, registration_date FROM users WHERE id = " + id);
         return fillData(resultSet);
     }
 
@@ -59,7 +49,6 @@ public class UserModel extends AbstractModel {
 
         if(resultSet.next()) {
             user.setId(resultSet.getInt("id"));
-            user.setEmail(resultSet.getString("email"));
             user.setStatus(resultSet.getString("status"));
             user.setIsSeller(resultSet.getBoolean("is_seller"));
             user.setFirstname(resultSet.getString("firstname"));

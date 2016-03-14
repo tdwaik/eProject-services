@@ -3,10 +3,7 @@ package com.thaer.jj.controller;
 import com.thaer.jj.entities.Category;
 import com.thaer.jj.model.CategoryModel;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,6 +21,19 @@ public class CategoryController extends MainController {
         try {
             CategoryModel categoryModel = new CategoryModel();
             ArrayList<Category> categories = categoryModel.getMainCategoriesList();
+            return Response.ok().entity(toJson(categories)).build();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Response.status(500).build();
+        }
+    }
+
+    @GET
+    @Path("/sub/{subOf}")
+    public Response getSubCategories(@PathParam("subOf") int subOf) {
+        try {
+            CategoryModel categoryModel = new CategoryModel();
+            ArrayList<Category> categories = categoryModel.getSubCategoriesList(subOf);
             return Response.ok().entity(toJson(categories)).build();
         } catch (SQLException e) {
             e.printStackTrace();

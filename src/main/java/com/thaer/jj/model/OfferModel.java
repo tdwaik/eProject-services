@@ -17,8 +17,8 @@ public class OfferModel extends AbstractModel {
 
     public ArrayList<OfferDetails> getOfferDetailList() throws SQLException {
         ResultSet resultSet = executeQuery(
-                "SELECT * FROM offers o " +
-                        "INNER JOIN offers_options oo ON oo.offer_id = o.id " +
+                "SELECT * FROM offers_options oo " +
+                        "INNER JOIN offers o ON oo.offer_id = o.id " +
                         "INNER JOIN offers_prices op ON op.offer_id = oo.id " +
                         "LIMIT 10");
 
