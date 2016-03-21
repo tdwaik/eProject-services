@@ -26,6 +26,10 @@ public class User {
 
     private String gender;
 
+    private Timestamp insertDate;
+
+    private Timestamp lastUpdate;
+
     public int getId() {
         return id;
     }

@@ -1,5 +1,7 @@
 package com.thaer.jj.entities;
 
+import java.sql.Timestamp;
+
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
  * @since Mar 11, 2016.
@@ -16,6 +18,9 @@ public class OfferReview {
 
     private String comment;
 
+    private Timestamp insertDate;
+
+    private Timestamp lastUpdate;
 
     public int getId() {
         return id;

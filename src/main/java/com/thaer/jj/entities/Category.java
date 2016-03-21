@@ -1,5 +1,7 @@
 package com.thaer.jj.entities;
 
+import java.sql.Timestamp;
+
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
  * @since February 25, 2016.
@@ -13,6 +15,10 @@ public class Category {
     private int subOf;
 
     private String name;
+
+    private Timestamp insertDate;
+
+    private Timestamp lastUpdate;
 
     public int getId() {
         return id;

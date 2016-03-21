@@ -1,6 +1,7 @@
 package com.thaer.jj.entities;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
@@ -17,6 +18,10 @@ public class OfferPrice {
     private BigDecimal price;
 
     private int stockQuantity;
+
+    private Timestamp insertDate;
+
+    private Timestamp lastUpdate;
 
     public int getId() {
         return id;
