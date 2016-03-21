@@ -1,9 +1,11 @@
 package com.thaer.jj.model;
 
+import com.thaer.jj.entities.User;
 import com.thaer.jj.model.sets.OfferDetails;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -40,6 +42,58 @@ public class OfferModel extends AbstractModel {
         }
 
         return offerDetailsList;
+    }
+
+
+    public boolean addOffers(User seller, ArrayList<OfferDetails> offersDetailsList) throws SQLException, IllegalArgumentException {
+
+        dbCconnection.setAutoCommit(false);
+
+        try {
+
+            for (OfferDetails offerDetails : offersDetailsList) {
+
+                // Add offer
+                String query = "INSERT INTO `offers` (`id_seller`, `brand_id`, `categoryId`, `description`, `status`) VALUES (?, ?, ?, ?, ?)";
+                preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                preparedStatement.setInt(1, seller.getId());
+                preparedStatement.setInt(2, offerDetails.offer.getBrandId());
+                preparedStatement.setInt(3, offerDetails.offer.getCategoryId());
+                preparedStatement.setString(4, offerDetails.offer.getDescription());
+                preparedStatement.setString(5, offerDetails.offer.getStatus());
+                preparedStatement.executeUpdate();
+
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
+
+                int newOfferId;
+
+                if(resultSet.next()) {
+                    newOfferId = resultSet.getInt(1);
+                }else {
+                    throw new IllegalArgumentException();
+                }
+
+                // Add OfferOptions
+                OfferOptionModel offerOptionModel = new OfferOptionModel();
+                offerDetails.offerOption.setOfferId(newOfferId);
+                offerOptionModel.addOfferOption(offerDetails.offerOption);
+
+                // Add OfferPrice
+                OfferPriceModel offerPriceModel = new OfferPriceModel();
+                offerDetails.offerPrice.setOfferOptionId(newOfferId);
+                offerPriceModel.addOfferPrice(offerDetails.offerPrice);
+            }
+
+            dbCconnection.commit();
+
+            return true;
+
+        }catch (SQLException e) {
+            dbCconnection.rollback();
+            dbCconnection.setAutoCommit(true);
+            throw e;
+        }
+
     }
 
 }

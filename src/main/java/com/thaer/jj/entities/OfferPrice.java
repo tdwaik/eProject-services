@@ -10,7 +10,7 @@ public class OfferPrice {
 
     private int id;
 
-    private int offerId;
+    private int offerOptionId;
 
     private int sizeId;
 
@@ -27,12 +27,12 @@ public class OfferPrice {
         return this;
     }
 
-    public int getOfferId() {
-        return offerId;
+    public int getOfferOptionId() {
+        return offerOptionId;
     }
 
-    public OfferPrice setOfferId(int offerId) {
-        this.offerId = offerId;
+    public OfferPrice setOfferOptionId(int offerOptionId) {
+        this.offerOptionId = offerOptionId;
         return this;
     }
 

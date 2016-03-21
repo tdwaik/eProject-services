@@ -10,9 +10,9 @@ public class Offer {
 
     private int id;
 
-    private int seller_id;
+    private int sellerId;
 
-    private int brand_id;
+    private int brandId;
 
     private int categoryId;
 
@@ -33,21 +33,21 @@ public class Offer {
         return this;
     }
 
-    public int getSeller_id() {
-        return seller_id;
+    public int getSellerId() {
+        return sellerId;
     }
 
-    public Offer setSeller_id(int seller_id) {
-        this.seller_id = seller_id;
+    public Offer setSellerId(int sellerId) {
+        this.sellerId = sellerId;
         return this;
     }
 
-    public int getBrand_id() {
-        return brand_id;
+    public int getBrandId() {
+        return brandId;
     }
 
-    public Offer setBrand_id(int brand_id) {
-        this.brand_id = brand_id;
+    public Offer setBrandId(int brandId) {
+        this.brandId = brandId;
         return this;
     }
 

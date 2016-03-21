@@ -41,26 +41,16 @@ public class OfferController extends MainController {
 
     }
 
-//    @GET
-//    @Path("/{offerId}")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getProductDetails(@PathParam("offerId") int offerId) {
-//        try {
-//
-//            if(offerId > 0) {
-//                OfferDetails productDetailsDetails = offerModel.getProductDetails(offerId);
-//                return Response.ok().entity(toJson(productDetailsDetails)).build();
-//            }else {
-//                return Response.status(400).build();
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return Response.status(500).build();
-//        }
-//
-//    }
-//
+    @PUT
+    @Path("/")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response addOffer(
+        @FormDataParam("offerDetailsJson") String offerDetailsJson,
+        @FormDataParam("file") InputStream fileInputStream,
+        @FormDataParam("file") FormDataContentDisposition fileMetaData
+    ) {
+        return Response.ok().build();
+    }
 //    @POST @Path("/add")
 //    @Consumes(MediaType.MULTIPART_FORM_DATA)
 //    public Response addProduct(

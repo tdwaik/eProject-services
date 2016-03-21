@@ -7,6 +7,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
@@ -15,7 +16,6 @@ import java.sql.SQLException;
 public class UserModel extends AbstractModel {
 
     public UserModel() throws SQLException {
-        super();
     }
 
     public User getUserById(int id) throws SQLException {
@@ -45,7 +45,7 @@ public class UserModel extends AbstractModel {
 
     public User fillData(ResultSet resultSet) throws SQLException {
 
-            User user = new User();
+        User user = new User();
 
         if(resultSet.next()) {
             user.setId(resultSet.getInt("id"));
@@ -75,19 +75,23 @@ public class UserModel extends AbstractModel {
             return -1;
         }
 
-
         String hashedPassowrd = hashPasword(password);
 
-        return executeUpdate(
-                "INSERT INTO users " +
-                        "(email, password, firstname, lastname, status) " +
-                        "VALUES " +
-                        "('" + email + "'," +
-                        " '" + hashedPassowrd + "'," +
-                        " '" + firstname + "'," +
-                        " '" + lastname + "'," +
-                        " 'unconfirmed_email')"
-        );
+        String query = "INSERT INTO `offers` (`email`, `password`, `firstname`, `lastname`, `status`) VALUES (?, ?, ?, ?, ?)";
+        preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        preparedStatement.setString(1, email);
+        preparedStatement.setString(2, hashedPassowrd);
+        preparedStatement.setString(3, firstname);
+        preparedStatement.setString(4, lastname);
+        preparedStatement.setString(5, "unconfirmed_email");
+
+        resultSet = preparedStatement.getGeneratedKeys();
+
+        if(resultSet.next()) {
+            return resultSet.getInt(1);
+        }else {
+            throw new IllegalArgumentException();
+        }
 
     }
 
