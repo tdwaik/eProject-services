@@ -38,7 +38,7 @@ public class UserAddresse {
 
     private String note;
 
-    private char preferredDeleviryTime;
+    private char preferredDeliveryTime;
 
     private boolean isPrimary;
 
