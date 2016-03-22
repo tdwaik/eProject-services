@@ -65,15 +65,15 @@ public class CategoryModel extends AbstractModel {
         String where = "";
 
         if(id != null) {
-            where += "c.id = " + id;
+            where += " c.id = " + id;
         }
 
         if(isMain != null) {
-            where += "c.is_main = " + (isMain? "1" : "0");
+            where += (where.length() > 1? " AND" : "") + " c.is_main = " + (isMain? "1" : "0");
         }
 
         if(subOf != null) {
-            where += "c.subOf = " + subOf;
+            where += (where.length() > 1? " AND" : "") + " c.sub_of = " + subOf;
         }
 
         return where.length() > 1? "WHERE " + where : where;
