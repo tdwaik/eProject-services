@@ -1,6 +1,7 @@
 package com.thaer.jj.core;
 
 import com.google.gson.Gson;
+import com.thaer.jj.core.config.Config;
 import com.thaer.jj.entities.BackofficeUser;
 import com.thaer.jj.entities.User;
 import com.thaer.jj.model.BackofficeUserModel;
@@ -68,7 +69,7 @@ public abstract class AbstractController {
     }
 
     private boolean securityCheckRequist() {
-        if(!"XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+        if(!"XMLHttpRequest".equals(request.getHeader("X-Requested-With")) && !Config.getConfig("ENV").equals("DEV")) {
             return false;
         }
 

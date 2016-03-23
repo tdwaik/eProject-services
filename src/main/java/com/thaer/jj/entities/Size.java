@@ -10,9 +10,9 @@ public class Size {
 
     private int id;
 
-    private String name;
+    private int categoryId;
 
-    private String type;
+    private String name;
 
     private Timestamp insertDate;
 
@@ -27,6 +27,15 @@ public class Size {
         return this;
     }
 
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public Size setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+        return this;
+    }
+
     public String getName() {
         return name;
     }
@@ -36,12 +45,21 @@ public class Size {
         return this;
     }
 
-    public String getType() {
-        return type;
+    public Timestamp getInsertDate() {
+        return insertDate;
     }
 
-    public Size setType(String type) {
-        this.type = type;
+    public Size setInsertDate(Timestamp insertDate) {
+        this.insertDate = insertDate;
+        return this;
+    }
+
+    public Timestamp getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public Size setLastUpdate(Timestamp lastUpdate) {
+        this.lastUpdate = lastUpdate;
         return this;
     }
 }

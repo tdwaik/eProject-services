@@ -32,7 +32,11 @@ public class OfferController extends MainController {
         try {
             ArrayList<OfferDetails> offerDetailsList = offerModel.getOfferDetailList();
 
-            return Response.ok().entity(toJson(offerDetailsList)).build();
+            if(offerDetailsList.size() > 0) {
+                return Response.ok().entity(toJson(offerDetailsList)).build();
+            }else {
+                return Response.status(204).build();
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
