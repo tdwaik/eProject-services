@@ -48,7 +48,8 @@ public class OfferController extends SellersController {
             String title = formDataMultiPart.getField("title").getValue();
             String description = formDataMultiPart.getField("description").getValue();
 
-            offerDetails.category.setId(categoryId);
+//            offerDetails.category.setId(categoryId);
+            offerDetails.offer.setCategoryId(categoryId);
             offerDetails.offer.setTitle(title);
             offerDetails.offer.setDescription(description);
 
@@ -114,6 +115,8 @@ public class OfferController extends SellersController {
                 offerOptionDetails.add(offerOptionDetail);
 
             }
+
+            offerDetails.offerOptionDetails = offerOptionDetails;
 
             OfferModel offerModel = new OfferModel();
             offerModel.addOffers(getAuthUser(), offerDetails);

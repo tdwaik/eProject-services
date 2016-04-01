@@ -24,8 +24,8 @@ public class OfferModel extends AbstractModel {
         ResultSet resultSet = executeQuery(
                 "SELECT * FROM `offers_options` oo " +
                         "INNER JOIN `offers` o ON oo.offer_id = o.id " +
-                        "INNER JOIN `" + OfferStockDetail.tableName + "` op ON op.offer_option_id = oo.id " +
-                        "LIMIT 10");
+                        "INNER JOIN `" + OfferStockDetail.tableName + "` osd ON osd.offer_option_id = oo.id " +
+                        "LIMIT 60");
 
         return fillOfferDetailsData(resultSet);
     }
@@ -79,17 +79,16 @@ public class OfferModel extends AbstractModel {
                 throw new IllegalArgumentException();
             }
 
+            if(offerDetails.offerOptionDetails.size() == 0) {
+                throw new IllegalArgumentException();
+            }
+
             // Add OfferOptions
             OfferOptionModel offerOptionModel = new OfferOptionModel();
             for(OfferOptionDetail offerOptionDetail : offerDetails.offerOptionDetails) {
-                offerOptionModel.addOfferOption(offerOptionDetail.offerOption);
+                int newOfferOptionId = offerOptionModel.addOfferOption(offerOptionDetail.offerOption);
 
-                resultSet = preparedStatement.getGeneratedKeys();
-
-                int newOfferOptionId;
-
-                if(resultSet.next()) {
-                    newOfferOptionId = resultSet.getInt(1);
+                if(newOfferOptionId > 0) {
                     offerOptionDetail.setNewOfferOptionId(newOfferOptionId);
                 }else {
                     throw new IllegalArgumentException();

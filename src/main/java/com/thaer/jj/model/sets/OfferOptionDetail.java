@@ -22,7 +22,7 @@ public class OfferOptionDetail {
 
     public OfferOptionDetail setNewOfferOptionId(int offerOptionId) {
         for(OfferStockDetail offerStockDetail : offerStockDetails) {
-            offerStockDetail.setStockQuantity(offerOptionId);
+            offerStockDetail.setOfferOptionId(offerOptionId);
         }
 
         return this;

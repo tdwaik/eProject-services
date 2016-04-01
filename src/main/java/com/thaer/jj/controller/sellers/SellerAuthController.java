@@ -5,6 +5,7 @@ import com.thaer.jj.core.JWTAuth;
 import com.thaer.jj.exceptions.UnAuthorizedException;
 
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -16,6 +17,10 @@ import java.sql.SQLException;
  */
 @Path("sellers")
 public class SellerAuthController extends AbstractController {
+
+    protected String getENV() {
+        return "sellers";
+    }
 
     @POST
     @Path("/login")
@@ -33,6 +38,18 @@ public class SellerAuthController extends AbstractController {
         }catch (SQLException e) {
             e.printStackTrace();
             return Response.status(500).build();
+        }
+
+    }
+
+    @GET
+    @Path("/isLogin")
+    public Response isLogin() {
+
+        if(isAuthUser()) {
+            return Response.ok().build();
+        }else {
+            return Response.status(401).build();
         }
 
     }
