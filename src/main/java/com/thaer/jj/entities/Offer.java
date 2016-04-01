@@ -16,6 +16,8 @@ public class Offer {
 
     private int categoryId;
 
+    private String title;
+
     private String description;
 
     private String status;
@@ -55,8 +57,18 @@ public class Offer {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public Offer setCategoryId(int categoryId) {
         this.categoryId = categoryId;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Offer setTitle(String title) {
+        this.title = title;
+        return this;
     }
 
     public String getDescription() {

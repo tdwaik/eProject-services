@@ -1,4 +1,4 @@
-package com.thaer.jj.backoffice;
+package com.thaer.jj.controller.backoffice;
 
 import com.thaer.jj.core.JWTAuth;
 import com.thaer.jj.exceptions.UnAuthorizedException;

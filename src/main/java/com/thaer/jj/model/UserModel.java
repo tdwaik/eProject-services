@@ -23,13 +23,19 @@ public class UserModel extends AbstractModel {
         return fillData(resultSet);
     }
 
-    public int getUserIdByAuth(String email, String password) throws UnAuthorizedException, SQLException, IllegalArgumentException {
+    public int getUserIdByAuth(String email, String password, boolean sellerCheck) throws UnAuthorizedException, SQLException, IllegalArgumentException {
 
         if(!Validator.checkEmail(email)) {
             throw new IllegalArgumentException();
         }
 
-        ResultSet resultSet = executeQuery("SELECT id, password FROM users WHERE email = '" + email + "'");
+        String sellerCheckWhere = "";
+
+        if(sellerCheck) {
+            sellerCheckWhere = " AND is_seller = 1";
+        }
+
+        ResultSet resultSet = executeQuery("SELECT id, password FROM users WHERE email = '" + email + "'" + sellerCheckWhere);
 
         if (resultSet.next()) {
             if(checkPassword(password, resultSet.getString("password"))) {

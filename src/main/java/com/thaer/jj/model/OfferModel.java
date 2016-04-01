@@ -1,7 +1,10 @@
 package com.thaer.jj.model;
 
+import com.thaer.jj.entities.OfferOption;
+import com.thaer.jj.entities.OfferStockDetail;
 import com.thaer.jj.entities.User;
 import com.thaer.jj.model.sets.OfferDetails;
+import com.thaer.jj.model.sets.OfferOptionDetail;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,9 +22,9 @@ public class OfferModel extends AbstractModel {
 
     public ArrayList<OfferDetails> getOfferDetailList() throws SQLException {
         ResultSet resultSet = executeQuery(
-                "SELECT * FROM offers_options oo " +
-                        "INNER JOIN offers o ON oo.offer_id = o.id " +
-                        "INNER JOIN offers_prices op ON op.offer_id = oo.id " +
+                "SELECT * FROM `offers_options` oo " +
+                        "INNER JOIN `offers` o ON oo.offer_id = o.id " +
+                        "INNER JOIN `" + OfferStockDetail.tableName + "` op ON op.offer_option_id = oo.id " +
                         "LIMIT 10");
 
         return fillOfferDetailsData(resultSet);
@@ -30,14 +33,17 @@ public class OfferModel extends AbstractModel {
     private ArrayList<OfferDetails> fillOfferDetailsData(ResultSet resultSet) throws SQLException {
 
         ArrayList<OfferDetails> offerDetailsList = new ArrayList<>();
-        OfferDetails offerDetails;
+        OfferDetails offerDetails = new OfferDetails();
+        OfferOption offerOption;
 
         while (resultSet.next()) {
-            offerDetails = new OfferDetails();
+            offerOption = new OfferOption();
 
-            offerDetails.offerOption.setTitle(resultSet.getString("oo.title"));
-            offerDetails.offerOption.setPicture(resultSet.getString("oo.picture"));
+            offerDetails.offer.setTitle(resultSet.getString("o.title"));
+            offerOption.setPicture(resultSet.getString("oo.picture"));
 
+            ArrayList<OfferOptionDetail> offerOptionDetails = new ArrayList<>();
+            offerDetails.offerOptionDetails = offerOptionDetails;
             offerDetailsList.add(offerDetails);
         }
 
@@ -45,43 +51,56 @@ public class OfferModel extends AbstractModel {
     }
 
 
-    public boolean addOffers(User seller, ArrayList<OfferDetails> offersDetailsList) throws SQLException, IllegalArgumentException {
+    public boolean addOffers(User seller, OfferDetails offerDetails) throws SQLException, IllegalArgumentException {
 
         dbCconnection.setAutoCommit(false);
 
         try {
 
-            for (OfferDetails offerDetails : offersDetailsList) {
+            // Add offer
+            String query = "INSERT INTO `offers` (`seller_id`, `category_id`, `brand_id`, `title`, `description`, `status`) VALUES (?, ?, ?, ?, ?, ?)";
+            preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setInt(1, seller.getId());
+            preparedStatement.setInt(2, offerDetails.offer.getCategoryId());
+            preparedStatement.setInt(3, offerDetails.offer.getBrandId());
+            preparedStatement.setString(4, offerDetails.offer.getTitle());
+            preparedStatement.setString(5, offerDetails.offer.getDescription());
+            preparedStatement.setString(6, offerDetails.offer.getStatus());
+            preparedStatement.executeUpdate();
 
-                // Add offer
-                String query = "INSERT INTO `offers` (`id_seller`, `brand_id`, `categoryId`, `description`, `status`) VALUES (?, ?, ?, ?, ?)";
-                preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-                preparedStatement.setInt(1, seller.getId());
-                preparedStatement.setInt(2, offerDetails.offer.getBrandId());
-                preparedStatement.setInt(3, offerDetails.offer.getCategoryId());
-                preparedStatement.setString(4, offerDetails.offer.getDescription());
-                preparedStatement.setString(5, offerDetails.offer.getStatus());
-                preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
 
-                ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            int newOfferId;
 
-                int newOfferId;
+            if(resultSet.next()) {
+                newOfferId = resultSet.getInt(1);
+                offerDetails.setNewOfferId(newOfferId);
+            }else {
+                throw new IllegalArgumentException();
+            }
+
+            // Add OfferOptions
+            OfferOptionModel offerOptionModel = new OfferOptionModel();
+            for(OfferOptionDetail offerOptionDetail : offerDetails.offerOptionDetails) {
+                offerOptionModel.addOfferOption(offerOptionDetail.offerOption);
+
+                resultSet = preparedStatement.getGeneratedKeys();
+
+                int newOfferOptionId;
 
                 if(resultSet.next()) {
-                    newOfferId = resultSet.getInt(1);
+                    newOfferOptionId = resultSet.getInt(1);
+                    offerOptionDetail.setNewOfferOptionId(newOfferOptionId);
                 }else {
                     throw new IllegalArgumentException();
                 }
 
-                // Add OfferOptions
-                OfferOptionModel offerOptionModel = new OfferOptionModel();
-                offerDetails.offerOption.setOfferId(newOfferId);
-                offerOptionModel.addOfferOption(offerDetails.offerOption);
+                // Add OfferStockDetail
+                OffersStockDetailsModel offersStockDetailsModel = new OffersStockDetailsModel();
+                for (OfferStockDetail offerStockDetail : offerOptionDetail.offerStockDetails) {
+                    offersStockDetailsModel.addOfferPrice(offerStockDetail);
+                }
 
-                // Add OfferPrice
-                OfferPriceModel offerPriceModel = new OfferPriceModel();
-                offerDetails.offerPrice.setOfferOptionId(newOfferId);
-                offerPriceModel.addOfferPrice(offerDetails.offerPrice);
             }
 
             dbCconnection.commit();

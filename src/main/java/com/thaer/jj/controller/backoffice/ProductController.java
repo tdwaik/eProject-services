@@ -1,4 +1,4 @@
-package com.thaer.jj.backoffice;
+package com.thaer.jj.controller.backoffice;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.PUT;

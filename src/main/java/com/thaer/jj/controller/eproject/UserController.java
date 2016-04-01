@@ -1,4 +1,4 @@
-package com.thaer.jj.controller;
+package com.thaer.jj.controller.eproject;
 
 import com.thaer.jj.entities.User;
 import com.thaer.jj.model.UserModel;

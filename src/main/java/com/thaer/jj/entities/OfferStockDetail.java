@@ -7,7 +7,9 @@ import java.sql.Timestamp;
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
  * @since March 10, 2016.
  */
-public class OfferPrice {
+public class OfferStockDetail {
+
+    public static String tableName = "offers_stock_details";
 
     private int id;
 
@@ -27,7 +29,7 @@ public class OfferPrice {
         return id;
     }
 
-    public OfferPrice setId(int id) {
+    public OfferStockDetail setId(int id) {
         this.id = id;
         return this;
     }
@@ -36,7 +38,7 @@ public class OfferPrice {
         return offerOptionId;
     }
 
-    public OfferPrice setOfferOptionId(int offerOptionId) {
+    public OfferStockDetail setOfferOptionId(int offerOptionId) {
         this.offerOptionId = offerOptionId;
         return this;
     }
@@ -45,7 +47,7 @@ public class OfferPrice {
         return sizeId;
     }
 
-    public OfferPrice setSizeId(int sizeId) {
+    public OfferStockDetail setSizeId(int sizeId) {
         this.sizeId = sizeId;
         return this;
     }
@@ -54,7 +56,7 @@ public class OfferPrice {
         return price;
     }
 
-    public OfferPrice setPrice(BigDecimal price) {
+    public OfferStockDetail setPrice(BigDecimal price) {
         this.price = price;
         return this;
     }
@@ -63,7 +65,7 @@ public class OfferPrice {
         return stockQuantity;
     }
 
-    public OfferPrice setStockQuantity(int stockQuantity) {
+    public OfferStockDetail setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
         return this;
     }

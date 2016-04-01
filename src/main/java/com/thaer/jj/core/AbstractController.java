@@ -30,8 +30,6 @@ public abstract class AbstractController {
 
     private BackofficeUser authBackofficeUser = null;
 
-    protected boolean isBackofficeEnv = false;
-
     public User getAuthUser() {
         return authUser;
     }
@@ -58,18 +56,26 @@ public abstract class AbstractController {
     public void init() throws SQLException {
 
         if(!securityCheckRequist()) {
-            System.exit(-1);
+            if(!"DEV".equals(Config.getConfig("ENV"))) {
+                System.exit(-1);
+            }
         }
 
-        if(isBackofficeEnv) {
+        if(getENV() == "backoffice") {
             //setAuthBackofficeUser();
+        }else if(getENV() == "sellers") {
+            setSellerUser();
         }else {
             setAuthUser();
         }
     }
 
+    protected String getENV() {
+        return "eproject";
+    }
+
     private boolean securityCheckRequist() {
-        if(!"XMLHttpRequest".equals(request.getHeader("X-Requested-With")) && !Config.getConfig("ENV").equals("DEV")) {
+        if(!"XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
             return false;
         }
 
@@ -90,6 +96,16 @@ public abstract class AbstractController {
         JWTAuth jwtAuth = new JWTAuth();
 
         if (jwtAuth.isUserAuth(authorization, request.getRemoteAddr())) {
+            UserModel userModel = new UserModel();
+            authUser = userModel.getUserById(jwtAuth.getAuthUserId());
+        }
+
+    }
+
+    private void setSellerUser() throws SQLException {
+        JWTAuth jwtAuth = new JWTAuth();
+
+        if (jwtAuth.isSellerUserAuth(authorization, request.getRemoteAddr())) {
             UserModel userModel = new UserModel();
             authUser = userModel.getUserById(jwtAuth.getAuthUserId());
         }

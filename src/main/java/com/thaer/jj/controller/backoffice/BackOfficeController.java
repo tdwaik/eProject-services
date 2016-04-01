@@ -1,4 +1,4 @@
-package com.thaer.jj.backoffice;
+package com.thaer.jj.controller.backoffice;
 
 import com.thaer.jj.core.AbstractController;
 
@@ -8,6 +8,8 @@ import com.thaer.jj.core.AbstractController;
  */
 public abstract class BackOfficeController extends AbstractController {
 
-    protected boolean isBackofficeEnv = true;
+    protected String getENV() {
+        return "backoffice";
+    }
 
 }

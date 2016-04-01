@@ -15,13 +15,12 @@ public class OfferOptionModel extends AbstractModel {
     }
 
     public int addOfferOption(OfferOption offerOption) throws SQLException, IllegalArgumentException {
-        String query = "INSERT INTO offersOptions (`OfferId`, `title`, `color`, `picture`, `status`) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO `offers_options` (`offer_id`, `color`, `picture`, `status`) VALUES (?, ?, ?, ?)";
         preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         preparedStatement.setInt(1, offerOption.getOfferId());
-        preparedStatement.setString(2, offerOption.getTitle());
-        preparedStatement.setString(3, offerOption.getColor());
-        preparedStatement.setString(4, offerOption.getPicture());
-        preparedStatement.setString(5, offerOption.getStatus());
+        preparedStatement.setString(2, offerOption.getColor());
+        preparedStatement.setString(3, offerOption.getPicture());
+        preparedStatement.setString(4, offerOption.getStatus());
         preparedStatement.executeUpdate();
 
         ResultSet resultSet = preparedStatement.getGeneratedKeys();

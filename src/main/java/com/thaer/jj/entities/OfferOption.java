@@ -12,8 +12,6 @@ public class OfferOption {
 
     private int OfferId;
 
-    private String title;
-
     private String color;
 
     private String picture;
@@ -39,15 +37,6 @@ public class OfferOption {
 
     public OfferOption setOfferId(int offerId) {
         OfferId = offerId;
-        return this;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public OfferOption setTitle(String title) {
-        this.title = title;
         return this;
     }
 
