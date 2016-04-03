@@ -14,21 +14,21 @@ public class OfferDetails {
 
     public Offer offer;
 
-    public ArrayList<OfferOptionDetail> offerOptionDetails;
+    public ArrayList<OfferOptionDetail> offerOptionsDetails;
 
-    public Category category;
+    //public Category category;
 
     private Brand brand;
 
     public OfferDetails() {
         offer               = new Offer();
-        offerOptionDetails  = new ArrayList<>();
-        category            = new Category();
+        offerOptionsDetails  = new ArrayList<>();
+        //category            = new Category();
         brand               = new Brand();
     }
 
     public OfferDetails setNewOfferId(int offerId) {
-        for(OfferOptionDetail offerOptionDetail : offerOptionDetails) {
+        for(OfferOptionDetail offerOptionDetail : offerOptionsDetails) {
             offerOptionDetail.offerOption.setOfferId(offerId);
         }
 
