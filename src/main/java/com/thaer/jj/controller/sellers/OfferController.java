@@ -1,12 +1,12 @@
 package com.thaer.jj.controller.sellers;
 
-import com.thaer.jj.entities.OfferOption;
+import com.thaer.jj.entities.OfferVariation;
 import com.thaer.jj.entities.OfferStockDetail;
 import com.thaer.jj.entities.Size;
 import com.thaer.jj.model.OfferModel;
 import com.thaer.jj.model.SizeModel;
 import com.thaer.jj.model.sets.OfferDetails;
-import com.thaer.jj.model.sets.OfferOptionDetail;
+import com.thaer.jj.model.sets.VariationDetails;
 import net.coobird.thumbnailator.Thumbnails;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -56,9 +57,9 @@ public class OfferController extends SellersController {
             offerDetails.offer.setBrandId(1);
             offerDetails.offer.setStatus("live");
 
-            ArrayList<OfferOptionDetail> offerOptionDetails = new ArrayList<>();
-            OfferOptionDetail offerOptionDetail;
-            OfferOption offerOption;
+            ArrayList<VariationDetails> variationsDetails = new ArrayList<>();
+            VariationDetails variationDetail;
+            OfferVariation offerVariation;
 
             ArrayList<OfferStockDetail> offerStockDetails;
             OfferStockDetail offerStockDetail;
@@ -68,13 +69,13 @@ public class OfferController extends SellersController {
 
             int variationsCount = Integer.parseInt(formDataMultiPart.getField("variationsCount").getValue());
             for(int i = 0; i < variationsCount; i++) {
-                offerOption = new OfferOption();
+                offerVariation = new OfferVariation();
                 offerStockDetails = new ArrayList<>();
 
-                offerOption.setStatus("live");
+                offerVariation.setStatus("live");
 
                 String color = formDataMultiPart.getField("variations_" + i + "_color").getValue();
-                offerOption.setColor(color);
+                offerVariation.setColor(color);
 
                 SizeModel sizeModel = new SizeModel();
                 ArrayList<Size> categorySizes = sizeModel.getSizesByCategoryId(categoryId);
@@ -94,29 +95,31 @@ public class OfferController extends SellersController {
                 }
 
                 Random random = new Random();
-                String pictureFileName = random.nextInt() + "_" + random.nextInt() + "_" + random.nextInt() + ".jpg";
+                Date date = new Date();
+                String pictureFileName = random.nextInt(999999999) + "_" + date + ".jpg";
 
-                offerOption.setPicture(pictureFileName);
+                offerVariation.setPicture(pictureFileName);
 
                 List<FormDataBodyPart> mainPicture = formDataMultiPart.getFields("variations_" + i + "_mainPicture");
                 for (FormDataBodyPart picture : mainPicture) {
-                    uploadPicture(picture, "M_" + pictureFileName);
+                    uploadPicture(picture, "MC_" + pictureFileName);
                 }
 
-                List<FormDataBodyPart> pictures = formDataMultiPart.getFields("variations_" + i + "_pictures");
                 int count = 1;
+                List<FormDataBodyPart> pictures = formDataMultiPart.getFields("variations_" + i + "_pictures");
                 for (FormDataBodyPart picture : pictures) {
                     uploadPicture(picture, (count++) + "_" + pictureFileName);
                 }
 
-                offerOptionDetail = new OfferOptionDetail();
-                offerOptionDetail.offerOption = offerOption;
-                offerOptionDetail.offerStockDetails = offerStockDetails;
-                offerOptionDetails.add(offerOptionDetail);
+                variationDetail = new VariationDetails();
+                variationDetail.offerVariation = offerVariation;
+                variationDetail.offerVariation.setTotalPictures(count);
+                variationDetail.offerStockDetails = offerStockDetails;
+                variationsDetails.add(variationDetail);
 
             }
 
-            offerDetails.offerOptionsDetails = offerOptionDetails;
+            offerDetails.variationsDetails = variationsDetails;
 
             OfferModel offerModel = new OfferModel();
             offerModel.addOffers(getAuthUser(), offerDetails);
@@ -136,7 +139,7 @@ public class OfferController extends SellersController {
     private String uploadPicture(FormDataBodyPart picture, String pictureFileName) throws IOException, IllegalArgumentException {
 
         String mimeType = picture.getMediaType().toString();
-        if(!mimeType.equals("image/png") && !mimeType.equals("image/jpeg") && !mimeType.equals("image/gif")) {
+        if(!mimeType.equals("image/png") && !mimeType.equals("image/jpeg")) {
             throw new IllegalArgumentException();
         }
 
@@ -149,24 +152,30 @@ public class OfferController extends SellersController {
         int imageWidth = bufferedImage.getWidth();
         int imageHeight = bufferedImage.getHeight();
 
-        int SHeight = (120 * imageHeight) / imageWidth;
-        int MHeight = (300 * imageHeight) / imageWidth;
-        int LHeight = (512 * imageHeight) / imageWidth;
+        int SWidth = 120;
+        int MWidth = 300;
+        int LWidth = 512;
+        int XLWidth = (imageWidth > 900)? 900 : imageWidth;
 
-        File file = new File("/home/stig/CDN/images/O_" + pictureFileName);
+        int SHeight = (SWidth * imageHeight) / imageWidth;
+        int MHeight = (MWidth * imageHeight) / imageWidth;
+        int LHeight = (LWidth * imageHeight) / imageWidth;
+        int XLHeight = (XLWidth * imageHeight) / imageWidth;
+
+        File file = new File("/home/stig/CDN/images/offers/O/" + pictureFileName);
         ImageIO.write(bufferedImage, "jpg", file);
 
-        file = new File("/home/stig/CDN/images/S_" + pictureFileName);
-        ImageIO.write(resize(bufferedImage, 120, SHeight), "jpg", file);
+        file = new File("/home/stig/CDN/images/offers/S/" + pictureFileName);
+        ImageIO.write(resize(bufferedImage, SWidth, SHeight), "jpg", file);
 
-        file = new File("/home/stig/CDN/images/M_" + pictureFileName);
-        ImageIO.write(resize(bufferedImage, 320, MHeight), "jpg", file);
+        file = new File("/home/stig/CDN/images/offers/M/" + pictureFileName);
+        ImageIO.write(resize(bufferedImage, MWidth, MHeight), "jpg", file);
 
-        file = new File("/home/stig/CDN/images/L_" + pictureFileName);
-        ImageIO.write(resize(bufferedImage, 512, LHeight), "jpg", file);
+        file = new File("/home/stig/CDN/images/offers/L/" + pictureFileName);
+        ImageIO.write(resize(bufferedImage, LWidth, LHeight), "jpg", file);
 
-        file = new File("/home/stig/CDN/images/XL_" + pictureFileName);
-        ImageIO.write(resize(bufferedImage, 512, LHeight), "jpg", file);
+        file = new File("/home/stig/CDN/images/offers/XL/" + pictureFileName);
+        ImageIO.write(resize(bufferedImage, XLWidth, XLHeight), "jpg", file);
 
         return pictureFileName;
 

@@ -6,7 +6,7 @@ import java.sql.Timestamp;
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
  * @since February 25, 2016.
  */
-public class OfferOption {
+public class OfferVariation {
 
     private int id;
 
@@ -15,6 +15,8 @@ public class OfferOption {
     private String color;
 
     private String picture;
+
+    private int totalPictures;
 
     private String status;
 
@@ -26,7 +28,7 @@ public class OfferOption {
         return id;
     }
 
-    public OfferOption setId(int id) {
+    public OfferVariation setId(int id) {
         this.id = id;
         return this;
     }
@@ -35,7 +37,7 @@ public class OfferOption {
         return OfferId;
     }
 
-    public OfferOption setOfferId(int offerId) {
+    public OfferVariation setOfferId(int offerId) {
         OfferId = offerId;
         return this;
     }
@@ -44,7 +46,7 @@ public class OfferOption {
         return color;
     }
 
-    public OfferOption setColor(String color) {
+    public OfferVariation setColor(String color) {
         this.color = color;
         return this;
     }
@@ -53,8 +55,17 @@ public class OfferOption {
         return picture;
     }
 
-    public OfferOption setPicture(String picture) {
+    public OfferVariation setPicture(String picture) {
         this.picture = picture;
+        return this;
+    }
+
+    public int getTotalPictures() {
+        return totalPictures;
+    }
+
+    public OfferVariation setTotalPictures(int totalPictures) {
+        this.totalPictures = totalPictures;
         return this;
     }
 
@@ -62,7 +73,7 @@ public class OfferOption {
         return status;
     }
 
-    public OfferOption setStatus(String status) {
+    public OfferVariation setStatus(String status) {
         this.status = status;
         return this;
     }
@@ -71,7 +82,7 @@ public class OfferOption {
         return insertDate;
     }
 
-    public OfferOption setInsertDate(Timestamp insertDate) {
+    public OfferVariation setInsertDate(Timestamp insertDate) {
         this.insertDate = insertDate;
         return this;
     }
@@ -80,7 +91,7 @@ public class OfferOption {
         return lastUpdate;
     }
 
-    public OfferOption setLastUpdate(Timestamp lastUpdate) {
+    public OfferVariation setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
         return this;
     }

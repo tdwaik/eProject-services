@@ -10,7 +10,7 @@ public class OffersListResponse {
 
     public int offerId;
 
-    public int offerOptionId;
+    public int variationId;
 
     public String title;
 

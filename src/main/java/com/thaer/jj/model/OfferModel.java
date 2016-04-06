@@ -6,7 +6,7 @@ import com.thaer.jj.entities.User;
 import com.thaer.jj.model.responseData.OfferViewResponse;
 import com.thaer.jj.model.responseData.OffersListResponse;
 import com.thaer.jj.model.sets.OfferDetails;
-import com.thaer.jj.model.sets.OfferOptionDetail;
+import com.thaer.jj.model.sets.VariationDetails;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -25,10 +25,10 @@ public class OfferModel extends AbstractModel {
     }
 
     public ArrayList<OffersListResponse> getOfferDetailList() throws SQLException {
-        ResultSet resultSet = executeQuery("SELECT o.id, oo.id, oo.picture, o.title FROM `offers_options` oo INNER JOIN `offers` o ON oo.offer_id = o.id WHERE oo.status = 'live' AND o.status = 'live' GROUP BY oo.offer_id ORDER BY oo.offer_id DESC LIMIT 20");
+        ResultSet resultSet = executeQuery("SELECT o.id, ov.id, ov.picture, o.title FROM `offers_variations` ov INNER JOIN `offers` o ON ov.offer_id = o.id WHERE ov.status = 'live' AND o.status = 'live' GROUP BY ov.offer_id ORDER BY ov.offer_id DESC LIMIT 20");
 
         ArrayList<OffersListResponse> ResponseList = new ArrayList<>();
-        ArrayList<Integer> offersOptionsIds = new ArrayList<>();
+        ArrayList<Integer> variationsIds = new ArrayList<>();
         OffersListResponse offersListResponse;
 
         while (resultSet.next()) {
@@ -36,32 +36,32 @@ public class OfferModel extends AbstractModel {
 
             offersListResponse.offerId = resultSet.getInt("o.id");
             offersListResponse.title = resultSet.getString("o.title");
-            offersListResponse.offerOptionId = resultSet.getInt("oo.id");
-            offersListResponse.picture = resultSet.getString("oo.picture");
+            offersListResponse.variationId = resultSet.getInt("ov.id");
+            offersListResponse.picture = resultSet.getString("ov.picture");
 
-            offersOptionsIds.add(offersListResponse.offerOptionId);
+            variationsIds.add(offersListResponse.variationId);
             ResponseList.add(offersListResponse);
         }
 
-        String offersOptionsIdsStr = Strings.implode(", ", offersOptionsIds);
+        String variationsIdsStr = Strings.implode(", ", variationsIds);
 
-        resultSet = executeQuery("SELECT offer_option_id, price FROM offers_stock_details WHERE stock_quantity > 0 AND offer_option_id IN (" + offersOptionsIdsStr + ")");
+        resultSet = executeQuery("SELECT variation_id, price FROM offers_stock_details WHERE stock_quantity > 0 AND variation_id IN (" + variationsIdsStr + ")");
 
         HashMap<Integer, ArrayList<BigDecimal>> pricesMap = new HashMap<>();
         ArrayList<BigDecimal> prices;
         while(resultSet.next()) {
-            int offerOptionId = resultSet.getInt("offer_option_id");
+            int variationId = resultSet.getInt("variation_id");
 
-            if(!pricesMap.containsKey(offerOptionId)) {
+            if(!pricesMap.containsKey(variationId)) {
                 prices = new ArrayList<>();
-                pricesMap.put(resultSet.getInt("offer_option_id"), prices);
+                pricesMap.put(resultSet.getInt("variation_id"), prices);
             }
 
-            pricesMap.get(resultSet.getInt("offer_option_id")).add(resultSet.getBigDecimal("price"));
+            pricesMap.get(resultSet.getInt("variation_id")).add(resultSet.getBigDecimal("price"));
         }
 
         for(OffersListResponse offersListRes : ResponseList) {
-            prices = pricesMap.get(offersListRes.offerOptionId);
+            prices = pricesMap.get(offersListRes.variationId);
 
             for(BigDecimal price : prices) {
                 offersListRes.maxPrice = (offersListRes.maxPrice == null || offersListRes.maxPrice.compareTo(price) == -1) ? price : offersListRes.maxPrice;
@@ -72,27 +72,27 @@ public class OfferModel extends AbstractModel {
         return ResponseList;
     }
 
-    public OfferViewResponse getOfferDetailsByOptionId(int offerId, int optionId) throws SQLException {
-        ResultSet resultSet = executeQuery("SELECT oo.id, oo.picture, oo.color, o.title, o.description FROM `offers_options` oo INNER JOIN `offers` o ON oo.offer_id = o.id WHERE o.id = " + offerId + " AND oo.status = 'live' AND o.status = 'live'");
+    public OfferViewResponse getOfferDetailsByVariationId(int offerId, int variationId) throws SQLException {
+        ResultSet resultSet = executeQuery("SELECT ov.id, ov.picture, ov.color, o.title, o.description FROM `offers_variations` ov INNER JOIN `offers` o ON ov.offer_id = o.id WHERE o.id = " + offerId + " AND ov.status = 'live' AND o.status = 'live'");
 
         OfferViewResponse offerViewResponse = new OfferViewResponse();
         OfferDetails offerDetails = new OfferDetails();
-        offerDetails.offerOptionsDetails = new ArrayList<>();
+        offerDetails.variationsDetails = new ArrayList<>();
 
         HashMap<Integer, String> variationsPictures = new HashMap<>();
         HashMap<Integer, String> variationsColors = new HashMap<>();
 
         while (resultSet.next()) {
-            if(resultSet.getInt("oo.id") == optionId) {
-                offerViewResponse.optionId = resultSet.getInt("oo.id");
+            if(resultSet.getInt("ov.id") == variationId) {
+                offerViewResponse.variationId = resultSet.getInt("ov.id");
                 offerViewResponse.title = resultSet.getString("o.title");
                 offerViewResponse.description = resultSet.getString("o.description");
-                offerViewResponse.picture = resultSet.getString("oo.picture");
-                offerViewResponse.color = resultSet.getString("oo.color");
+                offerViewResponse.picture = resultSet.getString("ov.picture");
+                offerViewResponse.color = resultSet.getString("ov.color");
             }
 
-            variationsPictures.put(resultSet.getInt("oo.id"), resultSet.getString("oo.picture"));
-            variationsColors.put(resultSet.getInt("oo.id"), resultSet.getString("oo.color"));
+            variationsPictures.put(resultSet.getInt("ov.id"), resultSet.getString("ov.picture"));
+            variationsColors.put(resultSet.getInt("ov.id"), resultSet.getString("ov.color"));
 
         }
 
@@ -100,7 +100,7 @@ public class OfferModel extends AbstractModel {
         offerViewResponse.variationsColors = variationsColors;
 
         OffersStockDetailsModel offersStockDetailsModel = new OffersStockDetailsModel();
-        offerViewResponse.offerStockDetails = offersStockDetailsModel.getOfferStockDetailsByOptionId(optionId);
+        offerViewResponse.offerStockDetails = offersStockDetailsModel.getOfferStockDetailsByVariationId(variationId);
 
         return offerViewResponse;
     }
@@ -133,24 +133,24 @@ public class OfferModel extends AbstractModel {
                 throw new IllegalArgumentException();
             }
 
-            if(offerDetails.offerOptionsDetails.size() == 0) {
+            if(offerDetails.variationsDetails.size() == 0) {
                 throw new IllegalArgumentException();
             }
 
-            // Add OfferOptions
-            OfferOptionModel offerOptionModel = new OfferOptionModel();
-            for(OfferOptionDetail offerOptionDetail : offerDetails.offerOptionsDetails) {
-                int newOfferOptionId = offerOptionModel.addOfferOption(offerOptionDetail.offerOption);
+            // Add OfferVariations
+            OfferVariationModel offerVariationModel = new OfferVariationModel();
+            for(VariationDetails variationDetails : offerDetails.variationsDetails) {
+                int newVarationId = offerVariationModel.addOfferVariation(variationDetails.offerVariation);
 
-                if(newOfferOptionId > 0) {
-                    offerOptionDetail.setNewOfferOptionId(newOfferOptionId);
+                if(newVarationId > 0) {
+                    variationDetails.setNewVariationId(newVarationId);
                 }else {
                     throw new IllegalArgumentException();
                 }
 
                 // Add OfferStockDetail
                 OffersStockDetailsModel offersStockDetailsModel = new OffersStockDetailsModel();
-                for (OfferStockDetail offerStockDetail : offerOptionDetail.offerStockDetails) {
+                for (OfferStockDetail offerStockDetail : variationDetails.offerStockDetails) {
                     offersStockDetailsModel.addOfferPrice(offerStockDetail);
                 }
 

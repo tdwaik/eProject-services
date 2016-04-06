@@ -11,7 +11,7 @@ import java.util.HashMap;
  */
 public class OfferViewResponse {
 
-    public int optionId;
+    public int variationId;
 
     public String brand;
 

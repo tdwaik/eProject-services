@@ -13,7 +13,9 @@ public class OfferStockDetail {
 
     private int id;
 
-    private int offerOptionId;
+    private int variationId;
+
+    private String sku;
 
     private int sizeId;
 
@@ -34,12 +36,21 @@ public class OfferStockDetail {
         return this;
     }
 
-    public int getOfferOptionId() {
-        return offerOptionId;
+    public int getVariationId() {
+        return variationId;
     }
 
-    public OfferStockDetail setOfferOptionId(int offerOptionId) {
-        this.offerOptionId = offerOptionId;
+    public OfferStockDetail setVariationId(int variationId) {
+        this.variationId = variationId;
+        return this;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public OfferStockDetail setSku(String sku) {
+        this.sku = sku;
         return this;
     }
 
@@ -69,4 +80,23 @@ public class OfferStockDetail {
         this.stockQuantity = stockQuantity;
         return this;
     }
+
+    public Timestamp getInsertDate() {
+        return insertDate;
+    }
+
+    public OfferStockDetail setInsertDate(Timestamp insertDate) {
+        this.insertDate = insertDate;
+        return this;
+    }
+
+    public Timestamp getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public OfferStockDetail setLastUpdate(Timestamp lastUpdate) {
+        this.lastUpdate = lastUpdate;
+        return this;
+    }
+
 }

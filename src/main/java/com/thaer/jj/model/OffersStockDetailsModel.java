@@ -17,8 +17,8 @@ public class OffersStockDetailsModel extends AbstractModel {
     public OffersStockDetailsModel() throws SQLException {
     }
 
-    public ArrayList<OfferStockDetail> getOfferStockDetailsByOptionId(int offerOptionId) throws SQLException {
-        ResultSet resultSet = executeQuery("SELECT * FROM offers_stock_details WHERE offer_option_id = " + offerOptionId + " ORDER BY price ASC");
+    public ArrayList<OfferStockDetail> getOfferStockDetailsByVariationId(int variationId) throws SQLException {
+        ResultSet resultSet = executeQuery("SELECT * FROM offers_stock_details WHERE variation_id = " + variationId + " ORDER BY price ASC");
         ArrayList<OfferStockDetail> offerStockDetails = new ArrayList<>();
         while(resultSet.next()) {
             offerStockDetails.add(fillData(resultSet));
@@ -26,34 +26,34 @@ public class OffersStockDetailsModel extends AbstractModel {
         return offerStockDetails;
     }
 
-    public HashMap<Integer, ArrayList<OfferStockDetail>> getOfferStockDetailsInOptionIds(String offerOptionIds) throws SQLException {
-        ResultSet resultSet = executeQuery("SELECT * FROM offers_stock_details WHERE offer_option_id IN (" + offerOptionIds + ")");
+    public HashMap<Integer, ArrayList<OfferStockDetail>> getOfferStockDetailsInVariationIds(String variationIds) throws SQLException {
+        ResultSet resultSet = executeQuery("SELECT * FROM offers_stock_details WHERE variation_id IN (" + variationIds + ")");
         HashMap<Integer, ArrayList<OfferStockDetail>> offerStockDetailMap = new HashMap<>();
         ArrayList<OfferStockDetail> offerStockDetails;
         while(resultSet.next()) {
 
-            int offerOptionId = resultSet.getInt("offer_option_id");
+            int variationId = resultSet.getInt("variation_id");
 
-            if(!offerStockDetailMap.containsKey(offerOptionId)) {
+            if(!offerStockDetailMap.containsKey(variationId)) {
                 offerStockDetails = new ArrayList<>();
-                offerStockDetailMap.put(resultSet.getInt("offer_option_id"), offerStockDetails);
+                offerStockDetailMap.put(resultSet.getInt("variation_id"), offerStockDetails);
             }
 
-            offerStockDetailMap.get(offerOptionId).add(fillData(resultSet));
+            offerStockDetailMap.get(variationId).add(fillData(resultSet));
         }
         return offerStockDetailMap;
     }
 
-    public HashMap<Integer, ArrayList<OfferStockDetail>> getOfferStockDetailsInOptionIds(ArrayList<Integer> offerOptionIds) throws SQLException {
-        String str = Strings.implode(", ", offerOptionIds);
-        return getOfferStockDetailsInOptionIds(str);
+    public HashMap<Integer, ArrayList<OfferStockDetail>> getOfferStockDetailsInVariationIds(ArrayList<Integer> variationIds) throws SQLException {
+        String str = Strings.implode(", ", variationIds);
+        return getOfferStockDetailsInVariationIds(str);
     }
 
     public OfferStockDetail fillData(ResultSet resultSet) throws SQLException {
         OfferStockDetail offerStockDetail;
         offerStockDetail = new OfferStockDetail();
         offerStockDetail.setId(resultSet.getInt("id"));
-        offerStockDetail.setOfferOptionId(resultSet.getInt("offer_option_id"));
+        offerStockDetail.setVariationId(resultSet.getInt("variation_id"));
         offerStockDetail.setSizeId(resultSet.getInt("size_id"));
         offerStockDetail.setStockQuantity(resultSet.getInt("stock_quantity"));
         offerStockDetail.setPrice(resultSet.getBigDecimal("price"));
@@ -62,9 +62,9 @@ public class OffersStockDetailsModel extends AbstractModel {
 
     public int addOfferPrice(OfferStockDetail offerStockDetail) throws SQLException, IllegalArgumentException {
 
-        String query = "INSERT INTO `" + OfferStockDetail.tableName + "` (`offer_option_id`, `size_id`, `price`, `stock_quantity`) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO `" + OfferStockDetail.tableName + "` (`variation_id`, `size_id`, `price`, `stock_quantity`) VALUES (?, ?, ?, ?)";
         preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-        preparedStatement.setInt(1, offerStockDetail.getOfferOptionId());
+        preparedStatement.setInt(1, offerStockDetail.getVariationId());
         preparedStatement.setInt(2, offerStockDetail.getSizeId());
         preparedStatement.setBigDecimal(3, offerStockDetail.getPrice());
         preparedStatement.setInt(4, offerStockDetail.getStockQuantity());

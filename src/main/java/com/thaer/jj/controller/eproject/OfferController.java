@@ -51,7 +51,7 @@ public class OfferController extends MainController {
         }
 
         try {
-            OfferViewResponse offerViewResponse = offerModel.getOfferDetailsByOptionId(offerId, offerOptionId);
+            OfferViewResponse offerViewResponse = offerModel.getOfferDetailsByVariationId(offerId, offerOptionId);
             return Response.ok().entity(toJson(offerViewResponse)).build();
 
         } catch (SQLException e) {

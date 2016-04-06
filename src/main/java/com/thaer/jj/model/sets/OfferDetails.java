@@ -1,7 +1,6 @@
 package com.thaer.jj.model.sets;
 
 import com.thaer.jj.entities.Brand;
-import com.thaer.jj.entities.Category;
 import com.thaer.jj.entities.Offer;
 
 import java.util.ArrayList;
@@ -14,22 +13,19 @@ public class OfferDetails {
 
     public Offer offer;
 
-    public ArrayList<OfferOptionDetail> offerOptionsDetails;
-
-    //public Category category;
+    public ArrayList<VariationDetails> variationsDetails;
 
     private Brand brand;
 
     public OfferDetails() {
         offer               = new Offer();
-        offerOptionsDetails  = new ArrayList<>();
-        //category            = new Category();
+        variationsDetails  = new ArrayList<>();
         brand               = new Brand();
     }
 
     public OfferDetails setNewOfferId(int offerId) {
-        for(OfferOptionDetail offerOptionDetail : offerOptionsDetails) {
-            offerOptionDetail.offerOption.setOfferId(offerId);
+        for(VariationDetails variationDetails : variationsDetails) {
+            variationDetails.offerVariation.setOfferId(offerId);
         }
 
         return this;
