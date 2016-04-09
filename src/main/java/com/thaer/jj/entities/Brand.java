@@ -14,7 +14,7 @@ public class Brand {
 
     private String name;
 
-    private String brand;
+    private String status;
 
     private Timestamp insertDate;
 
@@ -47,12 +47,12 @@ public class Brand {
         return this;
     }
 
-    public String getBrand() {
-        return brand;
+    public String getStatus() {
+        return status;
     }
 
-    public Brand setBrand(String brand) {
-        this.brand = brand;
+    public Brand setStatus(String status) {
+        this.status = status;
         return this;
     }
 }

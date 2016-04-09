@@ -13,6 +13,8 @@ public class OfferViewResponse {
 
     public int variationId;
 
+    public int categoryId;
+
     public String brand;
 
     public String title;
@@ -21,7 +23,7 @@ public class OfferViewResponse {
 
     public String picture;
 
-    public String color;
+    public int totalPictures;
 
     public ArrayList<OfferStockDetail> offerStockDetails;
 

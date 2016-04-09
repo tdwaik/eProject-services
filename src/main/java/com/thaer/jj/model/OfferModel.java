@@ -1,6 +1,7 @@
 package com.thaer.jj.model;
 
 import com.thaer.jj.core.utils.Strings;
+import com.thaer.jj.entities.Color;
 import com.thaer.jj.entities.OfferStockDetail;
 import com.thaer.jj.entities.User;
 import com.thaer.jj.model.responseData.OfferViewResponse;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
@@ -73,7 +75,7 @@ public class OfferModel extends AbstractModel {
     }
 
     public OfferViewResponse getOfferDetailsByVariationId(int offerId, int variationId) throws SQLException {
-        ResultSet resultSet = executeQuery("SELECT ov.id, ov.picture, ov.color, o.title, o.description FROM `offers_variations` ov INNER JOIN `offers` o ON ov.offer_id = o.id WHERE o.id = " + offerId + " AND ov.status = 'live' AND o.status = 'live'");
+        ResultSet resultSet = executeQuery("SELECT ov.id, ov.picture, ov.total_pictures, ov.color, o.brand_id, o.category_id, o.title, o.description FROM `offers_variations` ov INNER JOIN `offers` o ON ov.offer_id = o.id WHERE o.id = " + offerId + " AND ov.status = 'live' AND o.status = 'live'");
 
         OfferViewResponse offerViewResponse = new OfferViewResponse();
         OfferDetails offerDetails = new OfferDetails();
@@ -82,18 +84,37 @@ public class OfferModel extends AbstractModel {
         HashMap<Integer, String> variationsPictures = new HashMap<>();
         HashMap<Integer, String> variationsColors = new HashMap<>();
 
+        ArrayList<Integer> colorsIds = new ArrayList<>();
+
         while (resultSet.next()) {
             if(resultSet.getInt("ov.id") == variationId) {
+                offerViewResponse.categoryId = resultSet.getInt("o.category_id");
                 offerViewResponse.variationId = resultSet.getInt("ov.id");
                 offerViewResponse.title = resultSet.getString("o.title");
                 offerViewResponse.description = resultSet.getString("o.description");
                 offerViewResponse.picture = resultSet.getString("ov.picture");
-                offerViewResponse.color = resultSet.getString("ov.color");
+                offerViewResponse.totalPictures =  resultSet.getInt("ov.total_pictures");
+
+                int brandId = resultSet.getInt("o.brand_id");
+                BrandsModel brandsModel = new BrandsModel();
+                String BrandName = brandsModel.getBrandById(brandId).getName(); // TODO null check
+                offerViewResponse.brand = BrandName;
             }
 
             variationsPictures.put(resultSet.getInt("ov.id"), resultSet.getString("ov.picture"));
             variationsColors.put(resultSet.getInt("ov.id"), resultSet.getString("ov.color"));
+            colorsIds.add(resultSet.getInt("ov.color"));
+        }
 
+        ColorsModel colorsModel = new ColorsModel();
+        HashMap<Integer, Color> colors = colorsModel.getColorsIn(colorsIds);
+
+        Iterator it = variationsColors.entrySet().iterator();
+        while (it.hasNext()) {
+            HashMap.Entry pair = (HashMap.Entry)it.next();
+            int colorId = Integer.parseInt((String) pair.getValue());
+            String colorName = colors.get(colorId).getName();
+            pair.setValue(colorName);
         }
 
         offerViewResponse.variationsPictures = variationsPictures;
@@ -151,7 +172,7 @@ public class OfferModel extends AbstractModel {
                 // Add OfferStockDetail
                 OffersStockDetailsModel offersStockDetailsModel = new OffersStockDetailsModel();
                 for (OfferStockDetail offerStockDetail : variationDetails.offerStockDetails) {
-                    offersStockDetailsModel.addOfferPrice(offerStockDetail);
+                    offersStockDetailsModel.addStockDetail(offerStockDetail);
                 }
 
             }

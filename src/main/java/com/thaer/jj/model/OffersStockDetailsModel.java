@@ -60,14 +60,15 @@ public class OffersStockDetailsModel extends AbstractModel {
         return offerStockDetail;
     }
 
-    public int addOfferPrice(OfferStockDetail offerStockDetail) throws SQLException, IllegalArgumentException {
+    public int addStockDetail(OfferStockDetail offerStockDetail) throws SQLException, IllegalArgumentException {
 
-        String query = "INSERT INTO `" + OfferStockDetail.tableName + "` (`variation_id`, `size_id`, `price`, `stock_quantity`) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO `" + OfferStockDetail.tableName + "` (`variation_id`, `size_id`, `price`, `stock_quantity`, `sku`) VALUES (?, ?, ?, ?, ?)";
         preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         preparedStatement.setInt(1, offerStockDetail.getVariationId());
         preparedStatement.setInt(2, offerStockDetail.getSizeId());
         preparedStatement.setBigDecimal(3, offerStockDetail.getPrice());
         preparedStatement.setInt(4, offerStockDetail.getStockQuantity());
+        preparedStatement.setString(5, offerStockDetail.getSku());
         preparedStatement.executeUpdate();
 
         ResultSet resultSet = preparedStatement.getGeneratedKeys();

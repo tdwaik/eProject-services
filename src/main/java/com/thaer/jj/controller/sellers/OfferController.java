@@ -47,10 +47,12 @@ public class OfferController extends SellersController {
             OfferDetails offerDetails = new OfferDetails();
 
             int categoryId = Integer.parseInt(formDataMultiPart.getField("category").getValue());
+            int brandId = Integer.parseInt(formDataMultiPart.getField("brand").getValue());
             String title = formDataMultiPart.getField("title").getValue();
             String description = formDataMultiPart.getField("description").getValue();
 
             offerDetails.offer.setCategoryId(categoryId);
+            offerDetails.offer.setBrandId(brandId);
             offerDetails.offer.setTitle(title);
             offerDetails.offer.setDescription(description);
 
@@ -85,11 +87,13 @@ public class OfferController extends SellersController {
                     if(sizeFromData != null && Boolean.parseBoolean(sizeFromData.getValue())) {
                         int stockQuantity = Integer.parseInt(formDataMultiPart.getField("variations_" + i + "_stockQuantity_" + categorySize.getId()).getValue());
                         BigDecimal price = (BigDecimal) decimalFormat.parse(formDataMultiPart.getField("variations_" + i + "_price_" + categorySize.getId()).getValue());
+                        String sku = formDataMultiPart.getField("variations_" + i + "_sku_" + categorySize.getId()).getValue();
 
                         offerStockDetail = new OfferStockDetail();
                         offerStockDetail.setSizeId(categorySize.getId());
                         offerStockDetail.setStockQuantity(stockQuantity);
                         offerStockDetail.setPrice(price);
+                        offerStockDetail.setSku(sku);
                         offerStockDetails.add(offerStockDetail);
                     }
                 }
