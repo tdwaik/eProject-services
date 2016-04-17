@@ -18,7 +18,7 @@ import java.util.ArrayList;
 @Path("sizes")
 public class SizesController extends MainController {
 
-    @GET @Path("/getCategorySizes/{categoryId}")
+    @GET @Path("/getSizesByCategoryId/{categoryId}")
     public Response getSizesByCategoryId(@PathParam("categoryId") int categoryId) {
         try {
             SizeModel sizeModel = new SizeModel();

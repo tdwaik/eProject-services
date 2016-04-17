@@ -45,7 +45,7 @@ public class JWTAuth {
         jwtBuilder.setIssuedAt(cal.getTime());
 
         if(!rememberMe) {
-            cal.add(Calendar.HOUR_OF_DAY, 1);
+            cal.add(Calendar.HOUR_OF_DAY, 10);
             date = cal.getTime();
 
             jwtBuilder.setExpiration(date);

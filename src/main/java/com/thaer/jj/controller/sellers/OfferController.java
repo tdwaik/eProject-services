@@ -55,8 +55,6 @@ public class OfferController extends SellersController {
             offerDetails.offer.setBrandId(brandId);
             offerDetails.offer.setTitle(title);
             offerDetails.offer.setDescription(description);
-
-            offerDetails.offer.setBrandId(1);
             offerDetails.offer.setStatus("live");
 
             ArrayList<VariationDetails> variationsDetails = new ArrayList<>();
@@ -99,8 +97,7 @@ public class OfferController extends SellersController {
                 }
 
                 Random random = new Random();
-                Date date = new Date();
-                String pictureFileName = random.nextInt(999999999) + "_" + date + ".jpg";
+                String pictureFileName = random.nextInt(999999999) + "_" + random.nextInt(999999999) + ".jpg";
 
                 offerVariation.setPicture(pictureFileName);
 
