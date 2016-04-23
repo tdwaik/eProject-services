@@ -26,7 +26,6 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -35,7 +34,7 @@ import java.util.Random;
  * @since Mar 31, 2016.
  */
 @Path("sellers/offers")
-public class OfferController extends SellersController {
+public class OfferController extends SellersBaseController {
 
     @PUT
     @Path("/")
@@ -123,7 +122,7 @@ public class OfferController extends SellersController {
             offerDetails.variationsDetails = variationsDetails;
 
             OfferModel offerModel = new OfferModel();
-            offerModel.addOffers(getAuthUser(), offerDetails);
+            offerModel.addOffers(getAuthSeller(), offerDetails);
 
             return Response.status(Response.Status.CREATED).build();
 

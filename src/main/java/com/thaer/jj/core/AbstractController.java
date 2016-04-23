@@ -2,10 +2,6 @@ package com.thaer.jj.core;
 
 import com.google.gson.Gson;
 import com.thaer.jj.core.config.Config;
-import com.thaer.jj.entities.BackofficeUser;
-import com.thaer.jj.entities.User;
-import com.thaer.jj.model.BackofficeUserModel;
-import com.thaer.jj.model.UserModel;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -24,27 +20,7 @@ public abstract class AbstractController {
     public HttpServletRequest request;
 
     @HeaderParam("Authorization")
-    private String authorization;
-
-    private User authUser = null;
-
-    private BackofficeUser authBackofficeUser = null;
-
-    public User getAuthUser() {
-        return authUser;
-    }
-
-    public BackofficeUser getAuthBackofficeUser() {
-        return authBackofficeUser;
-    }
-
-    public boolean isAuthBackofficeUser() {
-        return authBackofficeUser != null;
-    }
-
-    public boolean isAuthUser() {
-        return authUser != null;
-    }
+    protected String authorization;
 
     /**
      *
@@ -61,18 +37,11 @@ public abstract class AbstractController {
             }
         }
 
-        if(getENV() == "backoffice") {
-            //setAuthBackofficeUser();
-        }else if(getENV() == "sellers") {
-            setSellerUser();
-        }else {
-            setAuthUser();
-        }
+        run();
+
     }
 
-    protected String getENV() {
-        return "eproject";
-    }
+    protected abstract void run();
 
     private boolean securityCheckRequist() {
         if(!"XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
@@ -84,48 +53,6 @@ public abstract class AbstractController {
         }
 
         return true;
-    }
-
-    /**
-     *
-     * @throws IOException
-     * @throws SQLException
-     * @throws ClassNotFoundException
-     */
-    private void setAuthUser() throws SQLException {
-        JWTAuth jwtAuth = new JWTAuth();
-
-        if (jwtAuth.isUserAuth(authorization, request.getRemoteAddr())) {
-            UserModel userModel = new UserModel();
-            authUser = userModel.getUserById(jwtAuth.getAuthUserId());
-        }
-
-    }
-
-    private void setSellerUser() throws SQLException {
-        JWTAuth jwtAuth = new JWTAuth();
-
-        if (jwtAuth.isSellerUserAuth(authorization, request.getRemoteAddr())) {
-            UserModel userModel = new UserModel();
-            authUser = userModel.getUserById(jwtAuth.getAuthUserId());
-        }
-
-    }
-
-    /**
-     *
-     * @throws IOException
-     * @throws SQLException
-     * @throws ClassNotFoundException
-     */
-    private void setAuthBackofficeUser() throws SQLException {
-        JWTAuth jwtAuth = new JWTAuth();
-
-        if (jwtAuth.isBackofficeUserAuth(authorization, request.getRemoteAddr())) {
-            BackofficeUserModel backofficeUserModel = new BackofficeUserModel();
-            authBackofficeUser = backofficeUserModel.getBackofficeUserById(jwtAuth.getAuthUserId());
-        }
-
     }
 
     /**

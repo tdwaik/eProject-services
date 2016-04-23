@@ -14,13 +14,9 @@ public class User {
 
     private String status;
 
-    private boolean isSeller;
-
     private String firstname;
 
     private String lastname;
-
-    private Timestamp regestrationDate;
 
     private String phoneNumber;
 
@@ -57,15 +53,6 @@ public class User {
         return this;
     }
 
-    public boolean isSeller() {
-        return isSeller;
-    }
-
-    public User setIsSeller(boolean isSeller) {
-        this.isSeller = isSeller;
-        return this;
-    }
-
     public String getFirstname() {
         return firstname;
     }
@@ -84,15 +71,6 @@ public class User {
         return this;
     }
 
-    public Timestamp getRegestrationDate() {
-        return regestrationDate;
-    }
-
-    public User setRegestrationDate(Timestamp regestrationDate) {
-        this.regestrationDate = regestrationDate;
-        return this;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -108,5 +86,21 @@ public class User {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public Timestamp getInsertDate() {
+        return insertDate;
+    }
+
+    public void setInsertDate(Timestamp insertDate) {
+        this.insertDate = insertDate;
+    }
+
+    public Timestamp getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(Timestamp lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 }

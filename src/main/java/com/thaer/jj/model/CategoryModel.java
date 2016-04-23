@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * @since March 11, 2016.
  */
 public class CategoryModel extends AbstractModel {
+
     public CategoryModel() throws SQLException {
     }
 
@@ -25,18 +26,18 @@ public class CategoryModel extends AbstractModel {
         return categories.get(0);
     }
 
-    private ArrayList<Category> getCategoriesList(Integer id, Boolean isMain, Integer subOf) throws SQLException {
-        String where = getWhere(null, isMain, subOf);
-        ResultSet resultSet = executeQuery("SELECT * FROM categories c " + where);
-        return fillData(resultSet);
-    }
-
     public ArrayList<Category> getMainCategoriesList() throws SQLException {
         return getCategoriesList(null, true, null);
     }
 
     public ArrayList<Category> getSubCategoriesList(int subOf) throws SQLException {
         return getCategoriesList(null, false, subOf);
+    }
+
+    private ArrayList<Category> getCategoriesList(Integer id, Boolean isMain, Integer subOf) throws SQLException {
+        String where = getWhere(null, isMain, subOf);
+        ResultSet resultSet = executeQuery("SELECT * FROM categories c " + where);
+        return fillData(resultSet);
     }
 
     public int addCategory(Category category) throws SQLException, IllegalArgumentException {
@@ -50,6 +51,27 @@ public class CategoryModel extends AbstractModel {
         preparedStatement.setBoolean(1, category.getIsMain());
         preparedStatement.setInt(2, category.getSubOf());
         preparedStatement.setString(3, category.getName());
+        preparedStatement.executeUpdate();
+
+        ResultSet resultSet = preparedStatement.getGeneratedKeys();
+
+        if(resultSet.next()) {
+            return resultSet.getInt(1);
+        }else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public int aupdateCategory(Category category) throws SQLException, IllegalArgumentException {
+
+        if(category.getId() < 1 && category.getName().length() < 2) {
+            throw new IllegalArgumentException();
+        }
+
+
+        PreparedStatement preparedStatement = dbCconnection.prepareStatement("UPDATE categories SET `name` = ? WHERE `id` = ?", Statement.RETURN_GENERATED_KEYS);
+        preparedStatement.setString(1, category.getName());
+        preparedStatement.setInt(2, category.getId());
         preparedStatement.executeUpdate();
 
         ResultSet resultSet = preparedStatement.getGeneratedKeys();

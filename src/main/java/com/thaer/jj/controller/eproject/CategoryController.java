@@ -41,33 +41,4 @@ public class CategoryController extends MainController {
         }
     }
 
-    @PUT
-    @Path("/")
-    public Response addCategory(@FormParam("name") String name, @FormParam("isMain") boolean isMain, @FormParam("subOf") int subOf) {
-        try {
-
-            if(getAuthBackofficeUser() == null) {
-                return Response.status(401).build();
-            }
-
-            Category category = new Category();
-            category.setName(name);
-            category.setIsMain(isMain);
-            category.setSubOf(subOf);
-
-            CategoryModel categoryModel = new CategoryModel();
-            if(categoryModel.addCategory(category) > 0) {
-                return Response.status(201).build();
-            }else {
-                return Response.status(400).build();
-            }
-
-        }catch (IllegalArgumentException e) {
-            return Response.status(400).build();
-        }catch (SQLException e) {
-            e.printStackTrace();
-            return Response.status(500).build();
-        }
-    }
-
 }

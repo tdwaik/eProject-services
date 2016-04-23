@@ -14,14 +14,14 @@ import java.util.ArrayList;
  * @since Apr 08, 2016.
  */
 @Path("brands")
-public class BrandsController extends SellersController {
+public class BrandsController extends SellersBaseController {
 
     @GET
     @Path("getBrandByAuthSeller")
     public Response getBrandByAuthSeller() {
         try {
             BrandsModel brandsModel = new BrandsModel();
-            ArrayList<Brand> brands = brandsModel.getBrandsBySellerId(getAuthUser().getId());
+            ArrayList<Brand> brands = brandsModel.getBrandsBySellerId(getAuthSeller().getId());
             return Response.ok().entity(toJson(brands)).build();
 
         } catch (SQLException e) {

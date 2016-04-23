@@ -3,7 +3,7 @@ package com.thaer.jj.model;
 import com.thaer.jj.core.utils.Strings;
 import com.thaer.jj.entities.Color;
 import com.thaer.jj.entities.OfferStockDetail;
-import com.thaer.jj.entities.User;
+import com.thaer.jj.entities.Seller;
 import com.thaer.jj.model.responseData.OfferViewResponse;
 import com.thaer.jj.model.responseData.OffersListResponse;
 import com.thaer.jj.model.sets.OfferDetails;
@@ -126,7 +126,7 @@ public class OfferModel extends AbstractModel {
         return offerViewResponse;
     }
 
-    public boolean addOffers(User seller, OfferDetails offerDetails) throws SQLException, IllegalArgumentException {
+    public boolean addOffers(Seller seller, OfferDetails offerDetails) throws SQLException, IllegalArgumentException {
 
         dbCconnection.setAutoCommit(false);
 

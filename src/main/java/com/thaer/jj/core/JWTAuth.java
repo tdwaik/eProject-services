@@ -2,7 +2,7 @@ package com.thaer.jj.core;
 
 import com.thaer.jj.core.config.Config;
 import com.thaer.jj.exceptions.UnAuthorizedException;
-import com.thaer.jj.model.UserModel;
+import com.thaer.jj.model.AuthModel;
 import io.jsonwebtoken.*;
 
 import java.sql.SQLException;
@@ -30,8 +30,14 @@ public class JWTAuth {
             throw new IllegalArgumentException();
         }
 
-        UserModel userModel = new UserModel();
-        int userId = userModel.getUserIdByAuth(email.toLowerCase(), password, sellerCheck);
+        AuthModel authModel = new AuthModel();
+        int userId;
+
+        if(sellerCheck) {
+            userId = authModel.getSellerIdByAuth(email.toLowerCase(), password);
+        }else {
+            userId = authModel.getUserIdByAuth(email.toLowerCase(), password);
+        }
 
         JwtBuilder jwtBuilder = Jwts.builder()
                 .setIssuer(remoteAddr)

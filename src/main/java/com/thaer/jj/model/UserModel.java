@@ -1,9 +1,8 @@
 package com.thaer.jj.model;
 
-import com.thaer.jj.exceptions.UnAuthorizedException;
+import com.thaer.jj.core.utils.Crypt;
 import com.thaer.jj.core.lib.Validator;
 import com.thaer.jj.entities.User;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,34 +18,8 @@ public class UserModel extends AbstractModel {
     }
 
     public User getUserById(int id) throws SQLException {
-        ResultSet resultSet = executeQuery("SELECT id, firstname, lastname, status, phone_number, is_seller, registration_date FROM users WHERE id = " + id);
+        ResultSet resultSet = executeQuery("SELECT id, firstname, lastname, status, phone_number, gender FROM users WHERE id = " + id);
         return fillData(resultSet);
-    }
-
-    public int getUserIdByAuth(String email, String password, boolean sellerCheck) throws UnAuthorizedException, SQLException, IllegalArgumentException {
-
-        if(!Validator.checkEmail(email)) {
-            throw new IllegalArgumentException();
-        }
-
-        String sellerCheckWhere = "";
-
-        if(sellerCheck) {
-            sellerCheckWhere = " AND is_seller = 1";
-        }
-
-        ResultSet resultSet = executeQuery("SELECT id, password FROM users WHERE email = '" + email + "'" + sellerCheckWhere);
-
-        if (resultSet.next()) {
-            if(checkPassword(password, resultSet.getString("password"))) {
-                return resultSet.getInt("id");
-            }else {
-                throw new UnAuthorizedException();
-            }
-        } else {
-            throw new UnAuthorizedException();
-        }
-
     }
 
     public User fillData(ResultSet resultSet) throws SQLException {
@@ -56,11 +29,10 @@ public class UserModel extends AbstractModel {
         if(resultSet.next()) {
             user.setId(resultSet.getInt("id"));
             user.setStatus(resultSet.getString("status"));
-            user.setIsSeller(resultSet.getBoolean("is_seller"));
             user.setFirstname(resultSet.getString("firstname"));
             user.setLastname(resultSet.getString("lastname"));
-            user.setRegestrationDate(resultSet.getTimestamp("registration_date"));
             user.setPhoneNumber(resultSet.getString("phone_number"));
+            user.setGender(resultSet.getString("gender"));
 
             return user;
         }else {
@@ -81,7 +53,7 @@ public class UserModel extends AbstractModel {
             return -1;
         }
 
-        String hashedPassowrd = hashPasword(password);
+        String hashedPassowrd = Crypt.hashPasword(password);
 
         String query = "INSERT INTO `offers` (`email`, `password`, `firstname`, `lastname`, `status`) VALUES (?, ?, ?, ?, ?)";
         preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -99,14 +71,6 @@ public class UserModel extends AbstractModel {
             throw new IllegalArgumentException();
         }
 
-    }
-
-    private String hashPasword(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt(15));
-    }
-
-    private boolean checkPassword(String candidate, String hashed) {
-        return BCrypt.checkpw(candidate, hashed);
     }
 
     public boolean validate(String email, String password, String firstname, String lastname) {
