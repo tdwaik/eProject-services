@@ -24,7 +24,7 @@ public class JWTAuth {
         return authUserId;
     }
 
-    private String generateAuth(String email, String password, String remoteAddr, boolean sellerCheck, boolean rememberMe) throws UnAuthorizedException, SQLException {
+    private String generateAuth(String email, String password, String remoteAddr, String type, boolean rememberMe) throws UnAuthorizedException, SQLException {
 
         if(secretKey == null || secretKey.length() < 10) {
             throw new IllegalArgumentException();
@@ -33,7 +33,9 @@ public class JWTAuth {
         AuthModel authModel = new AuthModel();
         int userId;
 
-        if(sellerCheck) {
+        if(type == "backOffice") {
+            userId = authModel.getBackOfficeUserIdByAuth(email.toLowerCase(), password);
+        }else if(type == "seller") {
             userId = authModel.getSellerIdByAuth(email.toLowerCase(), password);
         }else {
             userId = authModel.getUserIdByAuth(email.toLowerCase(), password);
@@ -89,19 +91,19 @@ public class JWTAuth {
         }
     }
 
-    public String generateBackofficeUserAuth(String email, String password, String remoteAddr) throws UnAuthorizedException, SQLException {
+    public String generateBackOfficeUserAuth(String email, String password, String remoteAddr) throws UnAuthorizedException, SQLException {
         secretKey = Config.getConfig("jwt.backoffice.secret");
-        return generateAuth(email, password, remoteAddr, false, false);
+        return generateAuth(email, password, remoteAddr, "backOffice", false);
     }
 
     public String generateSellerUserAuth(String email, String password, String remoteAddr) throws UnAuthorizedException, SQLException {
         secretKey = Config.getConfig("jwt.sellers.secret");
-        return generateAuth(email, password, remoteAddr, true, false);
+        return generateAuth(email, password, remoteAddr, "seller", false);
     }
 
     public String generateUserAuth(String email, String password, String remoteAddr, boolean rememberMe) throws UnAuthorizedException, SQLException {
         secretKey = Config.getConfig("jwt.eproject.secret");
-        return generateAuth(email, password, remoteAddr, false, rememberMe);
+        return generateAuth(email, password, remoteAddr, "user", rememberMe);
     }
 
     public boolean isUserAuth(String authorization, String remoteAddr) {

@@ -42,10 +42,9 @@ public class CategoryModel extends AbstractModel {
 
     public int addCategory(Category category) throws SQLException, IllegalArgumentException {
 
-        if(category.getName().length() < 2) {
+        if(category.getName().length() < 3) {
             throw new IllegalArgumentException();
         }
-
 
         PreparedStatement preparedStatement = dbCconnection.prepareStatement("INSERT INTO categories (`is_main`, `sub_of`, `name`) VALUES (? , ?, ?)", Statement.RETURN_GENERATED_KEYS);
         preparedStatement.setBoolean(1, category.getIsMain());
@@ -62,25 +61,15 @@ public class CategoryModel extends AbstractModel {
         }
     }
 
-    public int aupdateCategory(Category category) throws SQLException, IllegalArgumentException {
-
-        if(category.getId() < 1 && category.getName().length() < 2) {
+    public boolean updateCategory(Category category) throws SQLException, IllegalArgumentException {
+        if(category.getId() < 1 || category.getName().length() < 3) {
             throw new IllegalArgumentException();
         }
-
 
         PreparedStatement preparedStatement = dbCconnection.prepareStatement("UPDATE categories SET `name` = ? WHERE `id` = ?", Statement.RETURN_GENERATED_KEYS);
         preparedStatement.setString(1, category.getName());
         preparedStatement.setInt(2, category.getId());
-        preparedStatement.executeUpdate();
-
-        ResultSet resultSet = preparedStatement.getGeneratedKeys();
-
-        if(resultSet.next()) {
-            return resultSet.getInt(1);
-        }else {
-            throw new IllegalArgumentException();
-        }
+        return preparedStatement.executeUpdate() == 1;
     }
 
     private String getWhere(Integer id, Boolean isMain, Integer subOf) {

@@ -41,7 +41,7 @@ public class AuthModel extends AbstractModel {
         }else if(type == "seller") {
             tableName = "sellers";
         }else if(type == "backOffice") {
-            tableName = "back_office";
+            tableName = "backoffice_users";
         }else {
             throw new IllegalArgumentException();
         }

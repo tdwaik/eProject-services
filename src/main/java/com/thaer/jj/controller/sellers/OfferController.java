@@ -43,6 +43,8 @@ public class OfferController extends SellersBaseController {
 
         try {
 
+            if(getAuthSeller() != null) return Response.status(401).build();
+
             OfferDetails offerDetails = new OfferDetails();
 
             int categoryId = Integer.parseInt(formDataMultiPart.getField("category").getValue());

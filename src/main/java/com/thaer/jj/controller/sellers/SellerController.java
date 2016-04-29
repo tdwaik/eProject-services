@@ -5,21 +5,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 /**
- * Created by stig on 4/23/16.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since April 23, 2016.
  */
 @Path("sellers")
 public class SellerController extends SellersBaseController {
 
     @GET
-    @Path("/isLogin")
-    public Response isLogin() {
-
+    @Path("/authSeller")
+    public Response authSeller() {
         if(getAuthSeller() != null) {
-            return Response.ok().build();
+            return Response.ok().entity(toJson(getAuthSeller())).build();
         }else {
             return Response.status(401).build();
         }
-
     }
 
 }

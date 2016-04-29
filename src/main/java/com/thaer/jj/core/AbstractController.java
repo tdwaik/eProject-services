@@ -29,11 +29,11 @@ public abstract class AbstractController {
      * @throws ClassNotFoundException
      */
     @PostConstruct
-    public void init() throws SQLException {
+    public void init() throws SQLException, IllegalArgumentException {
 
         if(!securityCheckRequist()) {
             if(!"DEV".equals(Config.getConfig("ENV"))) {
-                System.exit(-1);
+                throw new IllegalArgumentException();
             }
         }
 

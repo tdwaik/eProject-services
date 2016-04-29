@@ -20,15 +20,23 @@ public abstract class BackOfficeController extends AbstractController {
         return authBackofficeUser;
     }
 
+    protected boolean requireAUth() {
+        return true;
+    }
+
     protected void run() {
         try {
             setAuthBackofficeUser();
         }catch (SQLException e) {
-            System.exit(-1);
+            if(requireAUth()) {
+                throw new IllegalArgumentException();
+            }
         }
 
         if (authBackofficeUser == null) {
-            System.exit(1);
+            if(requireAUth()) {
+                throw new IllegalArgumentException();
+            }
         }
 
     }

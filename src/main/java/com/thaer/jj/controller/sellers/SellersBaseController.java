@@ -15,16 +15,24 @@ public class SellersBaseController extends AbstractController {
 
     private Seller authSeller = null;
 
+    protected boolean requireAUth() {
+        return true;
+    }
+
     protected void run() {
 
         try {
             setSeller();
         }catch (SQLException e) {
-            System.exit(-1);
+            if(requireAUth()) {
+                throw new IllegalArgumentException();
+            }
         }
 
         if(authSeller == null) {
-            System.exit(1);
+            if(requireAUth()) {
+                throw new IllegalArgumentException();
+            }
         }
     }
 
