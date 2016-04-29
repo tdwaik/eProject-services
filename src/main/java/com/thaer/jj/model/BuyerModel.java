@@ -2,8 +2,9 @@ package com.thaer.jj.model;
 
 import com.thaer.jj.core.utils.Crypt;
 import com.thaer.jj.core.lib.Validator;
-import com.thaer.jj.entities.User;
+import com.thaer.jj.entities.Buyer;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -12,29 +13,32 @@ import java.sql.Statement;
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
  * @since February 10, 2016.
  */
-public class UserModel extends AbstractModel {
+public class BuyerModel extends AbstractModel {
 
-    public UserModel() throws SQLException {
+    public BuyerModel() throws SQLException {
     }
 
-    public User getUserById(int id) throws SQLException {
-        ResultSet resultSet = executeQuery("SELECT id, firstname, lastname, status, phone_number, gender FROM users WHERE id = " + id);
+    public Buyer getUserById(int id) throws SQLException {
+        ResultSet resultSet = executeQuery("SELECT id, firstname, lastname, status, phone, gender FROM buyers WHERE id = " + id);
         return fillData(resultSet);
     }
 
-    public User fillData(ResultSet resultSet) throws SQLException {
+    public Buyer fillData(ResultSet resultSet) throws SQLException {
 
-        User user = new User();
+        Buyer buyer = new Buyer();
 
         if(resultSet.next()) {
-            user.setId(resultSet.getInt("id"));
-            user.setStatus(resultSet.getString("status"));
-            user.setFirstname(resultSet.getString("firstname"));
-            user.setLastname(resultSet.getString("lastname"));
-            user.setPhoneNumber(resultSet.getString("phone_number"));
-            user.setGender(resultSet.getString("gender"));
+            buyer.setId(resultSet.getInt("id"));
+            buyer.setStatus(resultSet.getString("status"));
+            buyer.setFirstname(resultSet.getString("firstname"));
+            buyer.setLastname(resultSet.getString("lastname"));
+            BigDecimal bigDecimal = resultSet.getBigDecimal("phone");
+            if(bigDecimal != null) {
+                buyer.setPhone(bigDecimal.toBigInteger());
+            }
+            buyer.setGender(resultSet.getString("gender"));
 
-            return user;
+            return buyer;
         }else {
             return null;
         }
@@ -47,7 +51,7 @@ public class UserModel extends AbstractModel {
             throw new IllegalArgumentException();
         }
 
-        ResultSet resultSet = executeQuery("SELECT COUNT(1) row_count FROM users WHERE email = '" + email + "'");
+        ResultSet resultSet = executeQuery("SELECT COUNT(1) row_count FROM buyers WHERE email = '" + email + "'");
         resultSet.next();
         if(resultSet.getInt("row_count") > 0) {
             return -1;

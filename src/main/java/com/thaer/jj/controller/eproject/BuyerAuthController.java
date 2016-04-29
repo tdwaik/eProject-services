@@ -12,14 +12,14 @@ import java.sql.SQLException;
  * @since February 11, 2016.
  */
 
-@Path("usersAuth")
-public class UserAuthController extends MainController {
+@Path("buyerAuth")
+public class BuyerAuthController extends MainController {
 
     @POST @Path("/login")
     public Response login(@FormParam("email") String email, @FormParam("password") String password, @FormParam("rememberMe") boolean rememberMe) {
         try {
             JWTAuth jwtAuth = new JWTAuth();
-            String jwtAuthorization = jwtAuth.generateUserAuth(email, password, request.getRemoteAddr(), rememberMe);
+            String jwtAuthorization = jwtAuth.generateBuyerAuth(email, password, request.getRemoteAddr(), rememberMe);
 
             return Response.accepted().header("Authorization", jwtAuthorization).build();
 
@@ -37,7 +37,7 @@ public class UserAuthController extends MainController {
     @GET @Path("/isLogin")
     public Response isLogin() {
 
-        if(isAuthUser()) {
+        if(getAuthBuyer()) {
             return Response.ok().build();
         }else {
             return Response.status(401).build();

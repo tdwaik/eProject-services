@@ -1,12 +1,13 @@
 package com.thaer.jj.entities;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
  * @since February 10, 2016.
  */
-public class User {
+public class Buyer {
 
     private int id;
 
@@ -18,7 +19,7 @@ public class User {
 
     private String lastname;
 
-    private String phoneNumber;
+    private BigInteger phone;
 
     private String gender;
 
@@ -30,7 +31,7 @@ public class User {
         return id;
     }
 
-    public User setId(int id) {
+    public Buyer setId(int id) {
         this.id = id;
         return this;
     }
@@ -39,7 +40,7 @@ public class User {
         return email;
     }
 
-    public User setEmail(String email) {
+    public Buyer setEmail(String email) {
         this.email = email;
         return this;
     }
@@ -48,7 +49,7 @@ public class User {
         return status;
     }
 
-    public User setStatus(String status) {
+    public Buyer setStatus(String status) {
         this.status = status;
         return this;
     }
@@ -57,7 +58,7 @@ public class User {
         return firstname;
     }
 
-    public User setFirstname(String firstname) {
+    public Buyer setFirstname(String firstname) {
         this.firstname = firstname;
         return this;
     }
@@ -66,17 +67,17 @@ public class User {
         return lastname;
     }
 
-    public User setLastname(String lastname) {
+    public Buyer setLastname(String lastname) {
         this.lastname = lastname;
         return this;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public BigInteger getPhone() {
+        return phone;
     }
 
-    public User setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public Buyer setPhone(BigInteger phone) {
+        this.phone = phone;
         return this;
     }
 
@@ -84,23 +85,27 @@ public class User {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public Buyer setGender(String gender) {
         this.gender = gender;
+        return this;
     }
 
     public Timestamp getInsertDate() {
         return insertDate;
     }
 
-    public void setInsertDate(Timestamp insertDate) {
+    public Buyer setInsertDate(Timestamp insertDate) {
         this.insertDate = insertDate;
+        return this;
     }
 
     public Timestamp getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setLastUpdate(Timestamp lastUpdate) {
+    public Buyer setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
+        return this;
     }
+
 }

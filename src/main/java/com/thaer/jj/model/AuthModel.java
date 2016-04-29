@@ -17,7 +17,7 @@ public class AuthModel extends AbstractModel {
     }
 
     public int getUserIdByAuth(String email, String password) throws UnAuthorizedException, SQLException, IllegalArgumentException {
-        return getAuth(email, password, "user");
+        return getAuth(email, password, "buyer");
     }
 
     public int getSellerIdByAuth(String email, String password) throws UnAuthorizedException, SQLException, IllegalArgumentException {
@@ -36,8 +36,8 @@ public class AuthModel extends AbstractModel {
 
         String tableName;
 
-        if(type == "user") {
-            tableName = "users";
+        if(type == "buyer") {
+            tableName = "buyers";
         }else if(type == "seller") {
             tableName = "sellers";
         }else if(type == "backOffice") {

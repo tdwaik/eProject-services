@@ -2,8 +2,8 @@ package com.thaer.jj.controller.eproject;
 
 import com.thaer.jj.core.AbstractController;
 import com.thaer.jj.core.JWTAuth;
-import com.thaer.jj.entities.User;
-import com.thaer.jj.model.UserModel;
+import com.thaer.jj.entities.Buyer;
+import com.thaer.jj.model.BuyerModel;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -14,10 +14,10 @@ import java.sql.SQLException;
  */
 public abstract class MainController extends AbstractController {
 
-    private User authUser = null;
+    private Buyer authBuyer = null;
 
-    public User getAuthUser() {
-        return authUser;
+    public Buyer getAuthUser() {
+        return authBuyer;
     }
 
     protected void run() {
@@ -28,8 +28,8 @@ public abstract class MainController extends AbstractController {
         }
     }
 
-    public boolean isAuthUser() {
-        return authUser != null;
+    public boolean getAuthBuyer() {
+        return authBuyer != null;
     }
 
     /**
@@ -41,9 +41,9 @@ public abstract class MainController extends AbstractController {
     private void setAuthUser() throws SQLException {
         JWTAuth jwtAuth = new JWTAuth();
 
-        if (jwtAuth.isUserAuth(authorization, request.getRemoteAddr())) {
-            UserModel userModel = new UserModel();
-            authUser = userModel.getUserById(jwtAuth.getAuthUserId());
+        if (jwtAuth.isBuyerAuth(authorization, request.getRemoteAddr())) {
+            BuyerModel buyerModel = new BuyerModel();
+            authBuyer = buyerModel.getUserById(jwtAuth.getAuthUserId());
         }
 
     }

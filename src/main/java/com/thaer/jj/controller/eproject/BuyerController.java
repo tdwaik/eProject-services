@@ -1,7 +1,7 @@
 package com.thaer.jj.controller.eproject;
 
-import com.thaer.jj.entities.User;
-import com.thaer.jj.model.UserModel;
+import com.thaer.jj.entities.Buyer;
+import com.thaer.jj.model.BuyerModel;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -13,20 +13,20 @@ import java.sql.SQLException;
  * @since February 10, 2016.
  */
 
-@Path("users")
-public class UserController extends MainController {
+@Path("buyers")
+public class BuyerController extends MainController {
 
-    @GET @Path("/authUser")
+    @GET @Path("/authBuyer")
     public Response getUser() {
-        User authUser = getAuthUser();
-        if(authUser == null) {
+        Buyer authBuyer = getAuthUser();
+        if(authBuyer == null) {
             return Response.status(401).build();
         }
 
         return Response.ok().type(MediaType.APPLICATION_JSON).entity(toJson(getAuthUser())).build();
     }
 
-    @PUT @Path("/addUser")
+    @PUT @Path("/addBuyer")
     public Response addUser(
             @FormParam("email") String email,
             @FormParam("password") String password,
@@ -34,8 +34,8 @@ public class UserController extends MainController {
             @FormParam("lastname") String lastname) {
 
         try {
-            UserModel userModel = new UserModel();
-            int addResult = userModel.addUser(email, password, firstname, lastname);
+            BuyerModel buyerModel = new BuyerModel();
+            int addResult = buyerModel.addUser(email, password, firstname, lastname);
             if(addResult == 1) {
                 return Response.status(201).build();
             }else {

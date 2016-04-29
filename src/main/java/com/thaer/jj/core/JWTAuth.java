@@ -101,12 +101,12 @@ public class JWTAuth {
         return generateAuth(email, password, remoteAddr, "seller", false);
     }
 
-    public String generateUserAuth(String email, String password, String remoteAddr, boolean rememberMe) throws UnAuthorizedException, SQLException {
+    public String generateBuyerAuth(String email, String password, String remoteAddr, boolean rememberMe) throws UnAuthorizedException, SQLException {
         secretKey = Config.getConfig("jwt.eproject.secret");
-        return generateAuth(email, password, remoteAddr, "user", rememberMe);
+        return generateAuth(email, password, remoteAddr, "buyer", rememberMe);
     }
 
-    public boolean isUserAuth(String authorization, String remoteAddr) {
+    public boolean isBuyerAuth(String authorization, String remoteAddr) {
         secretKey = Config.getConfig("jwt.eproject.secret");
         return isAuth(authorization, remoteAddr);
     }

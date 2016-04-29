@@ -1,7 +1,7 @@
 package com.thaer.jj.controller.backoffice;
 
-import com.thaer.jj.entities.User;
-import com.thaer.jj.model.UserModel;
+import com.thaer.jj.entities.Buyer;
+import com.thaer.jj.model.BuyerModel;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -21,9 +21,9 @@ public class UserController extends BackOfficeController {
     @Path("/{userId:\\d+}")
     public Response getUser(@PathParam("userId") int userId) {
         try {
-            UserModel userModel = new UserModel();
-            User user = userModel.getUserById(userId);
-            return Response.ok().type(MediaType.APPLICATION_JSON).entity(toJson(user)).build();
+            BuyerModel buyerModel = new BuyerModel();
+            Buyer buyer = buyerModel.getUserById(userId);
+            return Response.ok().type(MediaType.APPLICATION_JSON).entity(toJson(buyer)).build();
         } catch (SQLException e) {
             e.printStackTrace();
             return Response.status(500).build();
