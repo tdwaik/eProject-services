@@ -16,10 +16,6 @@ public abstract class MainController extends AbstractController {
 
     private Buyer authBuyer = null;
 
-    public Buyer getAuthUser() {
-        return authBuyer;
-    }
-
     protected void run() {
         try {
             setAuthUser();
@@ -28,8 +24,8 @@ public abstract class MainController extends AbstractController {
         }
     }
 
-    public boolean getAuthBuyer() {
-        return authBuyer != null;
+    public Buyer getAuthBuyer() {
+        return authBuyer;
     }
 
     /**

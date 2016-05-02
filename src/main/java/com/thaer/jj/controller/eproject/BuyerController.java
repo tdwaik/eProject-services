@@ -1,6 +1,5 @@
 package com.thaer.jj.controller.eproject;
 
-import com.thaer.jj.entities.Buyer;
 import com.thaer.jj.model.BuyerModel;
 
 import javax.ws.rs.*;
@@ -18,12 +17,11 @@ public class BuyerController extends MainController {
 
     @GET @Path("/authBuyer")
     public Response getUser() {
-        Buyer authBuyer = getAuthUser();
-        if(authBuyer == null) {
-            return Response.status(401).build();
+        if(getAuthBuyer() == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        return Response.ok().type(MediaType.APPLICATION_JSON).entity(toJson(getAuthUser())).build();
+        return Response.ok().type(MediaType.APPLICATION_JSON).entity(toJson(getAuthBuyer())).build();
     }
 
     @PUT @Path("/addBuyer")

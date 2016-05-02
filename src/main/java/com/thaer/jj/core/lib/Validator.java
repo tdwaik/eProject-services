@@ -15,6 +15,16 @@ public class Validator {
     }
 
     public static boolean checkPhoneNumber(String phoneNumber) {
+        if(phoneNumber == null) {
+            return false;
+        }
         return phoneNumber.matches(RegexPatterns.PHONE_NUMBER);
+    }
+
+    public static boolean checkPhoneNumber(Long phoneNumber) {
+        if(phoneNumber == null) {
+            return false;
+        }
+        return Long.toString(phoneNumber).matches(RegexPatterns.PHONE_NUMBER);
     }
 }

@@ -37,7 +37,7 @@ public class BuyerAuthController extends MainController {
     @GET @Path("/isLogin")
     public Response isLogin() {
 
-        if(getAuthBuyer()) {
+        if(getAuthBuyer() != null) {
             return Response.ok().build();
         }else {
             return Response.status(401).build();

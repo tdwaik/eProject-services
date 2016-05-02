@@ -1,10 +1,10 @@
 package com.thaer.jj.entities;
 
-import java.math.BigInteger;
 import java.sql.Timestamp;
 
 /**
- * Created by stig on 4/29/16.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since Apr 29, 2016.
  */
 public class Address {
 
@@ -16,25 +16,17 @@ public class Address {
 
     private String lastname;
 
-    private BigInteger phone;
+    private long phone;
 
     private int countryId;
 
     private int cityId;
 
+    private String addressLine1;
+
+    private String addressLine2;
+
     private String region;
-
-    private String street;
-
-    private String buildingNumber;
-
-    private int floorNumber;
-
-    private int apartmentNumber;
-
-    private String landmark;
-
-    private String note;
 
     private String postalCode;
 
@@ -51,6 +43,14 @@ public class Address {
     public Address setId(int id) {
         this.id = id;
         return this;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getFirstname() {
@@ -71,11 +71,11 @@ public class Address {
         return this;
     }
 
-    public BigInteger getPhone() {
+    public long getPhone() {
         return phone;
     }
 
-    public Address setPhone(BigInteger phone) {
+    public Address setPhone(long phone) {
         this.phone = phone;
         return this;
     }
@@ -98,66 +98,30 @@ public class Address {
         return this;
     }
 
+    public String getAddressLine1() {
+        return addressLine1;
+    }
+
+    public Address setAddressLine1(String addressLine1) {
+        this.addressLine1 = addressLine1;
+        return this;
+    }
+
+    public String getAddressLine2() {
+        return addressLine2;
+    }
+
+    public Address setAddressLine2(String addressLine2) {
+        this.addressLine2 = addressLine2;
+        return this;
+    }
+
     public String getRegion() {
         return region;
     }
 
     public Address setRegion(String region) {
         this.region = region;
-        return this;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public Address setStreet(String street) {
-        this.street = street;
-        return this;
-    }
-
-    public String getBuildingNumber() {
-        return buildingNumber;
-    }
-
-    public Address setBuildingNumber(String buildingNumber) {
-        this.buildingNumber = buildingNumber;
-        return this;
-    }
-
-    public int getFloorNumber() {
-        return floorNumber;
-    }
-
-    public Address setFloorNumber(int floorNumber) {
-        this.floorNumber = floorNumber;
-        return this;
-    }
-
-    public int getApartmentNumber() {
-        return apartmentNumber;
-    }
-
-    public Address setApartmentNumber(int apartmentNumber) {
-        this.apartmentNumber = apartmentNumber;
-        return this;
-    }
-
-    public String getLandmark() {
-        return landmark;
-    }
-
-    public Address setLandmark(String landmark) {
-        this.landmark = landmark;
-        return this;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public Address setNote(String note) {
-        this.note = note;
         return this;
     }
 
@@ -196,4 +160,5 @@ public class Address {
         this.lastUpdate = lastUpdate;
         return this;
     }
+
 }
