@@ -45,13 +45,17 @@ public class BuyerModel extends AbstractModel {
 
     }
 
-    public int addUser(String email, String password, String firstname, String lastname) throws SQLException {
+    public int addBuyer(Buyer buyer, String password) throws SQLException {
 
-        if(!validate(email, password, firstname, lastname)) {
+        if(!validate(buyer, password)) {
             throw new IllegalArgumentException();
         }
 
-        ResultSet resultSet = executeQuery("SELECT COUNT(1) row_count FROM buyers WHERE email = '" + email + "'");
+        String query = "SELECT COUNT(1) row_count FROM buyers WHERE email = ?";
+        preparedStatement = dbCconnection.prepareStatement(query);
+        preparedStatement.setString(1, buyer.getEmail());
+        ResultSet resultSet = preparedStatement.executeQuery();
+
         resultSet.next();
         if(resultSet.getInt("row_count") > 0) {
             return -1;
@@ -59,13 +63,14 @@ public class BuyerModel extends AbstractModel {
 
         String hashedPassowrd = Crypt.hashPasword(password);
 
-        String query = "INSERT INTO `offers` (`email`, `password`, `firstname`, `lastname`, `status`) VALUES (?, ?, ?, ?, ?)";
+        query = "INSERT INTO `buyers` (`email`, `password`, `firstname`, `lastname`, `status`) VALUES (?, ?, ?, ?, ?)";
         preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-        preparedStatement.setString(1, email);
+        preparedStatement.setString(1, buyer.getEmail());
         preparedStatement.setString(2, hashedPassowrd);
-        preparedStatement.setString(3, firstname);
-        preparedStatement.setString(4, lastname);
-        preparedStatement.setString(5, "unconfirmed_email");
+        preparedStatement.setString(3, buyer.getFirstname());
+        preparedStatement.setString(4, buyer.getLastname());
+        preparedStatement.setString(5, buyer.getStatus());
+        preparedStatement.executeUpdate();
 
         resultSet = preparedStatement.getGeneratedKeys();
 
@@ -77,8 +82,8 @@ public class BuyerModel extends AbstractModel {
 
     }
 
-    public boolean validate(String email, String password, String firstname, String lastname) {
-        if(firstname == null || firstname.length() < 3 || lastname == null || lastname.length() < 3) {
+    public boolean validate(Buyer buyer, String password) {
+        if(buyer.getFirstname() == null || buyer.getLastname() == null) {
             return false;
         }
 
@@ -86,7 +91,7 @@ public class BuyerModel extends AbstractModel {
             return false;
         }
 
-        if(!Validator.checkEmail(email)) {
+        if(!Validator.checkEmail(buyer.getEmail())) {
             return false;
         }
 

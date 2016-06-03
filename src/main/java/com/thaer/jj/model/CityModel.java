@@ -29,4 +29,9 @@ public class CityModel extends AbstractModel {
 
         return cities;
     }
+
+    public boolean isCityExists(int countryId, int cityId) throws SQLException {
+        ResultSet resultSet = executeQuery("SELECT count(*) as count from cities WHERE id = " + cityId + " AND country_id = " + countryId);
+        return resultSet.next() && resultSet.getInt("count") == 1;
+    }
 }

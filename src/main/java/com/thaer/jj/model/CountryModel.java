@@ -28,4 +28,9 @@ public class CountryModel extends AbstractModel {
 
         return countries;
     }
+
+    public boolean isCountryExists(int countryId) throws SQLException {
+        ResultSet resultSet = executeQuery("SELECT count(*) as count from countries WHERE id = " + countryId);
+        return resultSet.next() && resultSet.getInt("count") == 1;
+    }
 }

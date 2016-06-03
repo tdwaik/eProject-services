@@ -1,7 +1,7 @@
 package com.thaer.jj.controller.sellers;
 
+import com.thaer.jj.entities.OfferStock;
 import com.thaer.jj.entities.OfferVariation;
-import com.thaer.jj.entities.OfferStockDetail;
 import com.thaer.jj.entities.Size;
 import com.thaer.jj.model.OfferModel;
 import com.thaer.jj.model.SizeModel;
@@ -62,8 +62,8 @@ public class OfferController extends SellersBaseController {
             VariationDetails variationDetail;
             OfferVariation offerVariation;
 
-            ArrayList<OfferStockDetail> offerStockDetails;
-            OfferStockDetail offerStockDetail;
+            ArrayList<OfferStock> offerStockList;
+            OfferStock offerStock;
 
             DecimalFormat decimalFormat = new DecimalFormat();
             decimalFormat.setParseBigDecimal(true);
@@ -71,7 +71,7 @@ public class OfferController extends SellersBaseController {
             int variationsCount = Integer.parseInt(formDataMultiPart.getField("variationsCount").getValue());
             for(int i = 0; i < variationsCount; i++) {
                 offerVariation = new OfferVariation();
-                offerStockDetails = new ArrayList<>();
+                offerStockList = new ArrayList<>();
 
                 offerVariation.setStatus("live");
 
@@ -88,12 +88,12 @@ public class OfferController extends SellersBaseController {
                         BigDecimal price = (BigDecimal) decimalFormat.parse(formDataMultiPart.getField("variations_" + i + "_price_" + categorySize.getId()).getValue());
                         String sku = formDataMultiPart.getField("variations_" + i + "_sku_" + categorySize.getId()).getValue();
 
-                        offerStockDetail = new OfferStockDetail();
-                        offerStockDetail.setSizeId(categorySize.getId());
-                        offerStockDetail.setStockQuantity(stockQuantity);
-                        offerStockDetail.setPrice(price);
-                        offerStockDetail.setSku(sku);
-                        offerStockDetails.add(offerStockDetail);
+                        offerStock = new OfferStock();
+                        offerStock.setSizeId(categorySize.getId());
+                        offerStock.setStockQuantity(stockQuantity);
+                        offerStock.setPrice(price);
+                        offerStock.setSku(sku);
+                        offerStockList.add(offerStock);
                     }
                 }
 
@@ -116,7 +116,7 @@ public class OfferController extends SellersBaseController {
                 variationDetail = new VariationDetails();
                 variationDetail.offerVariation = offerVariation;
                 variationDetail.offerVariation.setTotalPictures(count);
-                variationDetail.offerStockDetails = offerStockDetails;
+                variationDetail.offerStockList = offerStockList;
                 variationsDetails.add(variationDetail);
 
             }

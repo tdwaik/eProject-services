@@ -1,7 +1,7 @@
 package com.thaer.jj.model.sets;
 
+import com.thaer.jj.entities.OfferStock;
 import com.thaer.jj.entities.OfferVariation;
-import com.thaer.jj.entities.OfferStockDetail;
 
 import java.util.ArrayList;
 
@@ -13,16 +13,16 @@ public class VariationDetails {
 
     public OfferVariation offerVariation;
 
-    public ArrayList<OfferStockDetail> offerStockDetails;
+    public ArrayList<OfferStock> offerStockList;
 
     public VariationDetails() {
         offerVariation = new OfferVariation();
-        offerStockDetails = new ArrayList<>();
+        offerStockList = new ArrayList<>();
     }
 
     public VariationDetails setNewVariationId(int offerOptionId) {
-        for(OfferStockDetail offerStockDetail : offerStockDetails) {
-            offerStockDetail.setVariationId(offerOptionId);
+        for(OfferStock offerStock : offerStockList) {
+            offerStock.setVariationId(offerOptionId);
         }
 
         return this;

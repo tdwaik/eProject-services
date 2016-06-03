@@ -20,7 +20,7 @@ public abstract class MainController extends AbstractController {
         try {
             setAuthUser();
         }catch (SQLException e) {
-            System.exit(-1);
+            // do nothing
         }
     }
 

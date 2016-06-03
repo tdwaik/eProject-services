@@ -27,7 +27,7 @@ public class Config {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                System.exit(500);
+                return null;
             }
         }
 

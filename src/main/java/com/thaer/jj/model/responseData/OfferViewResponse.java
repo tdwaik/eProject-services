@@ -1,6 +1,6 @@
 package com.thaer.jj.model.responseData;
 
-import com.thaer.jj.entities.OfferStockDetail;
+import com.thaer.jj.entities.OfferStock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ public class OfferViewResponse {
 
     public int totalPictures;
 
-    public ArrayList<OfferStockDetail> offerStockDetails;
+    public ArrayList<OfferStock> offerStockList;
 
     public HashMap<Integer, String> variationsPictures;
 

@@ -2,7 +2,7 @@ package com.thaer.jj.model;
 
 import com.thaer.jj.core.utils.Strings;
 import com.thaer.jj.entities.Color;
-import com.thaer.jj.entities.OfferStockDetail;
+import com.thaer.jj.entities.OfferStock;
 import com.thaer.jj.entities.Seller;
 import com.thaer.jj.model.responseData.OfferViewResponse;
 import com.thaer.jj.model.responseData.OffersListResponse;
@@ -47,7 +47,7 @@ public class OfferModel extends AbstractModel {
 
         String variationsIdsStr = Strings.implode(", ", variationsIds);
 
-        resultSet = executeQuery("SELECT variation_id, price FROM offers_stock_details WHERE stock_quantity > 0 AND variation_id IN (" + variationsIdsStr + ")");
+        resultSet = executeQuery("SELECT variation_id, price FROM offers_stock WHERE stock_quantity > 0 AND variation_id IN (" + variationsIdsStr + ")");
 
         HashMap<Integer, ArrayList<BigDecimal>> pricesMap = new HashMap<>();
         ArrayList<BigDecimal> prices;
@@ -120,8 +120,8 @@ public class OfferModel extends AbstractModel {
         offerViewResponse.variationsPictures = variationsPictures;
         offerViewResponse.variationsColors = variationsColors;
 
-        OffersStockDetailsModel offersStockDetailsModel = new OffersStockDetailsModel();
-        offerViewResponse.offerStockDetails = offersStockDetailsModel.getOfferStockDetailsByVariationId(variationId);
+        OfferStockModel offerStockModel = new OfferStockModel();
+        offerViewResponse.offerStockList = offerStockModel.getOfferStockDetailsByVariationId(variationId);
 
         return offerViewResponse;
     }
@@ -169,10 +169,10 @@ public class OfferModel extends AbstractModel {
                     throw new IllegalArgumentException();
                 }
 
-                // Add OfferStockDetail
-                OffersStockDetailsModel offersStockDetailsModel = new OffersStockDetailsModel();
-                for (OfferStockDetail offerStockDetail : variationDetails.offerStockDetails) {
-                    offersStockDetailsModel.addStockDetail(offerStockDetail);
+                // Add OfferStock
+                OfferStockModel offerStockModel = new OfferStockModel();
+                for (OfferStock offerStock : variationDetails.offerStockList) {
+                    offerStockModel.addStockDetail(offerStock);
                 }
 
             }

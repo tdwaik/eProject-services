@@ -3,6 +3,7 @@ package com.thaer.jj.model;
 import com.thaer.jj.core.lib.Validator;
 import com.thaer.jj.entities.Address;
 import com.thaer.jj.entities.Buyer;
+import com.thaer.jj.exceptions.UnAuthorizedException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,28 +18,15 @@ public class AddressModel extends AbstractModel {
     public AddressModel() throws SQLException {
     }
 
+    public Address getAddressById(int id) throws SQLException {
+        ResultSet resultSet = executeQuery("SELECT * FROM addresses WHERE id = " + id);
+        ArrayList<Address> addresses = fillData(resultSet);
+        return addresses.size() > 0? addresses.get(0) : null;
+    }
+
     public ArrayList<Address> getAddressesByBuyerId(int buyerId) throws SQLException {
         ResultSet resultSet = executeQuery("SELECT * FROM addresses WHERE user_id = " + buyerId);
-
-        ArrayList<Address> addresses = new ArrayList<>();
-        Address address;
-        while(resultSet.next()) {
-            address = new Address();
-            address.setFirstname(resultSet.getString("firstname"));
-            address.setLastname(resultSet.getString("lastname"));
-            address.setPhone(resultSet.getLong("phone"));
-            address.setCountryId(resultSet.getInt("country_id"));
-            address.setCityId(resultSet.getInt("city_id"));
-            address.setAddressLine1(resultSet.getNString("address_line_1"));
-            address.setAddressLine2(resultSet.getNString("address_line_2"));
-            address.setRegion(resultSet.getString("region"));
-            address.setPostalCode(resultSet.getString("postal_code"));
-            address.setPrimary(resultSet.getBoolean("is_primary"));
-
-            addresses.add(address);
-        }
-
-        return addresses;
+        return fillData(resultSet);
     }
 
     public int addAddress(Buyer buyer, Address address) throws SQLException {
@@ -71,7 +59,18 @@ public class AddressModel extends AbstractModel {
         }
     }
 
-    public boolean validateAddAddress(Address address) {
+    public int deleteAddressById(Buyer buyer, int addressId) throws SQLException, UnAuthorizedException {
+        Address address = getAddressById(addressId);
+        if(address == null || address.getUserId() != buyer.getId()) {
+            throw new UnAuthorizedException();
+        }
+
+        String query = "DELETE FROM addresses WHERE id = " + addressId;
+        PreparedStatement preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        return preparedStatement.executeUpdate();
+    }
+
+    public boolean validateAddAddress(Address address) throws SQLException {
 
         ArrayList<String> errors = new ArrayList<>();
 
@@ -85,15 +84,42 @@ public class AddressModel extends AbstractModel {
         if(!Validator.checkPhoneNumber(address.getPhone())) {
             errors.add("phone");
         }
-        if(address.getCountryId() < 1) {
-            // TODO validate country ID
+
+        CountryModel countryModel = new CountryModel();
+        if(address.getCountryId() < 1 || !countryModel.isCountryExists(address.getCountryId())) {
             errors.add("country");
         }
-        if(address.getCityId() < 1) {
-            // TODO validate country ID
+
+        CityModel cityModel = new CityModel();
+        if(address.getCityId() < 1 || !cityModel.isCityExists(address.getCountryId(), address.getCityId())) {
             errors.add("city");
         }
 
         return errors.size() == 0;
     }
+
+    public ArrayList<Address> fillData(ResultSet resultSet) throws SQLException {
+        ArrayList<Address> addresses = new ArrayList<>();
+        Address address;
+        while(resultSet.next()) {
+            address = new Address();
+            address.setId(resultSet.getInt("id"));
+            address.setUserId(resultSet.getInt("user_id"));
+            address.setFirstname(resultSet.getString("firstname"));
+            address.setLastname(resultSet.getString("lastname"));
+            address.setPhone(resultSet.getLong("phone"));
+            address.setCountryId(resultSet.getInt("country_id"));
+            address.setCityId(resultSet.getInt("city_id"));
+            address.setAddressLine1(resultSet.getNString("address_line_1"));
+            address.setAddressLine2(resultSet.getNString("address_line_2"));
+            address.setRegion(resultSet.getString("region"));
+            address.setPostalCode(resultSet.getString("postal_code"));
+            address.setPrimary(resultSet.getBoolean("is_primary"));
+
+            addresses.add(address);
+        }
+
+        return addresses;
+    }
+
 }
