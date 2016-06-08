@@ -1,12 +1,10 @@
 package com.thaer.jj.controller.eproject;
 
-import com.thaer.jj.entities.Cart;
+import com.thaer.jj.exceptions.UnAuthorizedException;
 import com.thaer.jj.model.CartModel;
+import com.thaer.jj.model.responseData.CartOfferResponse;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,7 +27,7 @@ public class CartController extends MainController {
             }
 
             CartModel cartModel = new CartModel();
-            ArrayList<Cart> cartOffers = cartModel.getCartByBuyerId(getAuthBuyer().getId());
+            ArrayList<CartOfferResponse> cartOffers = cartModel.getCartOffersByBuyerId(getAuthBuyer().getId());
             return Response.ok().entity(toJson(cartOffers)).build();
 
         } catch (SQLException e) {
@@ -55,6 +53,30 @@ public class CartController extends MainController {
         }catch (SQLException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DELETE
+    @Path("/remove/{cartId}")
+    public Response deleteFromCart(@PathParam("cartId") int cartId) {
+        try {
+            if(getAuthBuyer() == null) {
+                return Response.status(Response.Status.UNAUTHORIZED).build();
+            }
+
+            CartModel cartModel = new CartModel();
+            cartModel.deleteFromCartByCartId(getAuthBuyer().getId(), cartId);
+            return Response.ok().build();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        } catch (UnAuthorizedException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
 }

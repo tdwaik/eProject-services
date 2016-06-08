@@ -12,7 +12,7 @@ public class OfferVariation {
 
     private int OfferId;
 
-    private String color;
+    private int color;
 
     private String picture;
 
@@ -42,11 +42,11 @@ public class OfferVariation {
         return this;
     }
 
-    public String getColor() {
+    public int getColor() {
         return color;
     }
 
-    public OfferVariation setColor(String color) {
+    public OfferVariation setColor(int color) {
         this.color = color;
         return this;
     }

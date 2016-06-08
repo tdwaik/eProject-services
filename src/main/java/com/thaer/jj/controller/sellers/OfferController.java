@@ -43,7 +43,7 @@ public class OfferController extends SellersBaseController {
 
         try {
 
-            if(getAuthSeller() != null) return Response.status(401).build();
+            if(getAuthSeller() == null) return Response.status(401).build();
 
             OfferDetails offerDetails = new OfferDetails();
 
@@ -75,7 +75,7 @@ public class OfferController extends SellersBaseController {
 
                 offerVariation.setStatus("live");
 
-                String color = formDataMultiPart.getField("variations_" + i + "_color").getValue();
+                int color = Integer.parseInt(formDataMultiPart.getField("variations_" + i + "_color").getValue());
                 offerVariation.setColor(color);
 
                 SizeModel sizeModel = new SizeModel();

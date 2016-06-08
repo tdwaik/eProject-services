@@ -17,7 +17,7 @@ public class OfferStockModel extends AbstractModel {
     public OfferStockModel() throws SQLException {
     }
 
-    public ArrayList<OfferStock> getOfferStockDetailsByVariationId(int variationId) throws SQLException {
+    public ArrayList<OfferStock> getOfferStockByVariationId(int variationId) throws SQLException {
         ResultSet resultSet = executeQuery("SELECT * FROM offers_stock WHERE variation_id = " + variationId + " ORDER BY price ASC");
         ArrayList<OfferStock> offersStock = new ArrayList<>();
         while(resultSet.next()) {
@@ -26,27 +26,27 @@ public class OfferStockModel extends AbstractModel {
         return offersStock;
     }
 
-    public HashMap<Integer, ArrayList<OfferStock>> getOfferStockDetailsInVariationIds(String variationIds) throws SQLException {
+    public HashMap<Integer, ArrayList<OfferStock>> getOfferStockInVariationIds(String variationIds) throws SQLException {
         ResultSet resultSet = executeQuery("SELECT * FROM offers_stock WHERE variation_id IN (" + variationIds + ")");
-        HashMap<Integer, ArrayList<OfferStock>> offerStockDetailMap = new HashMap<>();
+        HashMap<Integer, ArrayList<OfferStock>> offerStockMap = new HashMap<>();
         ArrayList<OfferStock> offersStock;
         while(resultSet.next()) {
 
             int variationId = resultSet.getInt("variation_id");
 
-            if(!offerStockDetailMap.containsKey(variationId)) {
+            if(!offerStockMap.containsKey(variationId)) {
                 offersStock = new ArrayList<>();
-                offerStockDetailMap.put(resultSet.getInt("variation_id"), offersStock);
+                offerStockMap.put(resultSet.getInt("variation_id"), offersStock);
             }
 
-            offerStockDetailMap.get(variationId).add(fillData(resultSet));
+            offerStockMap.get(variationId).add(fillData(resultSet));
         }
-        return offerStockDetailMap;
+        return offerStockMap;
     }
 
-    public HashMap<Integer, ArrayList<OfferStock>> getOfferStockDetailsInVariationIds(ArrayList<Integer> variationIds) throws SQLException {
+    public HashMap<Integer, ArrayList<OfferStock>> getOfferStockInVariationIds(ArrayList<Integer> variationIds) throws SQLException {
         String str = Strings.implode(", ", variationIds);
-        return getOfferStockDetailsInVariationIds(str);
+        return getOfferStockInVariationIds(str);
     }
 
     public OfferStock fillData(ResultSet resultSet) throws SQLException {
@@ -60,7 +60,7 @@ public class OfferStockModel extends AbstractModel {
         return offerStock;
     }
 
-    public int addStockDetail(OfferStock offerStock) throws SQLException, IllegalArgumentException {
+    public int addStock(OfferStock offerStock) throws SQLException, IllegalArgumentException {
 
         String query = "INSERT INTO `" + OfferStock.tableName + "` (`variation_id`, `size_id`, `price`, `stock_quantity`, `sku`) VALUES (?, ?, ?, ?, ?)";
         preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -80,13 +80,12 @@ public class OfferStockModel extends AbstractModel {
         }
     }
 
-    public boolean isStockExists(int id) throws SQLException {
-        String query = "SELECT count(1) c FROM `offers_stock` WHERE id = ?";
+    public boolean isStockAvailable(int id) throws SQLException {
+        String query = "SELECT stock_quantity FROM `offers_stock` WHERE id = ?";
         preparedStatement = dbCconnection.prepareStatement(query);
         preparedStatement.setInt(1, id);
         ResultSet resultSet = preparedStatement.executeQuery();
 
-        resultSet.next();
-        return resultSet.getInt("c") == 1;
+        return resultSet.next() && resultSet.getInt("stock_quantity") > 0;
     }
 }

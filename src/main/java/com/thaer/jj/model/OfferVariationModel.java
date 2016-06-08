@@ -15,10 +15,10 @@ public class OfferVariationModel extends AbstractModel {
     }
 
     public int addOfferVariation(OfferVariation offerVariation) throws SQLException, IllegalArgumentException {
-        String query = "INSERT INTO `offers_variations` (`offer_id`, `color`, `picture`, `total_pictures`, `status`) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO `offers_variations` (`offer_id`, `color_id`, `picture`, `total_pictures`, `status`) VALUES (?, ?, ?, ?, ?)";
         preparedStatement = dbCconnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         preparedStatement.setInt(1, offerVariation.getOfferId());
-        preparedStatement.setString(2, offerVariation.getColor());
+        preparedStatement.setInt(2, offerVariation.getColor());
         preparedStatement.setString(3, offerVariation.getPicture());
         preparedStatement.setInt(4, offerVariation.getTotalPictures());
         preparedStatement.setString(5, offerVariation.getStatus());

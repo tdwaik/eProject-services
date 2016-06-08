@@ -6,7 +6,7 @@ import java.math.BigDecimal;
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
  * @since Apr 03, 2016.
  */
-public class OffersListResponse {
+public class LastOffersResponse {
 
     public int offerId;
 
