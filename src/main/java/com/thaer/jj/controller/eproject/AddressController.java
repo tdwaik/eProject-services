@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import com.thaer.jj.entities.Address;
 import com.thaer.jj.exceptions.UnAuthorizedException;
 import com.thaer.jj.model.AddressModel;
+import com.thaer.jj.model.responseData.AddressResponse;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -27,7 +28,7 @@ public class AddressController extends MainController {
             }
 
             AddressModel addressModel = new AddressModel();
-            ArrayList<Address> addresses = addressModel.getAddressesByBuyerId(getAuthBuyer().getId());
+            ArrayList<AddressResponse> addresses = addressModel.getAddressesByBuyerId(getAuthBuyer().getId());
 
             if(addresses.size() > 0) {
                 return Response.ok().entity(toJson(addresses)).build();

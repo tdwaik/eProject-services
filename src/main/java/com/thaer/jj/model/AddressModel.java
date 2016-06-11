@@ -4,6 +4,7 @@ import com.thaer.jj.core.lib.Validator;
 import com.thaer.jj.entities.Address;
 import com.thaer.jj.entities.Buyer;
 import com.thaer.jj.exceptions.UnAuthorizedException;
+import com.thaer.jj.model.responseData.AddressResponse;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,14 +19,17 @@ public class AddressModel extends AbstractModel {
     public AddressModel() throws SQLException {
     }
 
-    public Address getAddressById(int id) throws SQLException {
+    public AddressResponse getAddressById(int id) throws SQLException {
         ResultSet resultSet = executeQuery("SELECT * FROM addresses WHERE id = " + id);
-        ArrayList<Address> addresses = fillData(resultSet);
+        ArrayList<AddressResponse> addresses = fillData(resultSet);
         return addresses.size() > 0? addresses.get(0) : null;
     }
 
-    public ArrayList<Address> getAddressesByBuyerId(int buyerId) throws SQLException {
-        ResultSet resultSet = executeQuery("SELECT * FROM addresses WHERE user_id = " + buyerId);
+    public ArrayList<AddressResponse> getAddressesByBuyerId(int buyerId) throws SQLException {
+        ResultSet resultSet = executeQuery(
+                "SELECT * FROM addresses ad " +
+                        "INNER JOIN countries co ON ad.country_id = co.id " +
+                        "INNER JOIN cities ci ON ad.city_id = ci.id WHERE ad.user_id = " + buyerId);
         return fillData(resultSet);
     }
 
@@ -98,28 +102,31 @@ public class AddressModel extends AbstractModel {
         return errors.size() == 0;
     }
 
-    public ArrayList<Address> fillData(ResultSet resultSet) throws SQLException {
-        ArrayList<Address> addresses = new ArrayList<>();
-        Address address;
+    public ArrayList<AddressResponse> fillData(ResultSet resultSet) throws SQLException {
+        ArrayList<AddressResponse> addressesResponse = new ArrayList<>();
+        AddressResponse address;
         while(resultSet.next()) {
-            address = new Address();
-            address.setId(resultSet.getInt("id"));
-            address.setUserId(resultSet.getInt("user_id"));
-            address.setFirstname(resultSet.getString("firstname"));
-            address.setLastname(resultSet.getString("lastname"));
-            address.setPhone(resultSet.getLong("phone"));
-            address.setCountryId(resultSet.getInt("country_id"));
-            address.setCityId(resultSet.getInt("city_id"));
-            address.setAddressLine1(resultSet.getNString("address_line_1"));
-            address.setAddressLine2(resultSet.getNString("address_line_2"));
-            address.setRegion(resultSet.getString("region"));
-            address.setPostalCode(resultSet.getString("postal_code"));
-            address.setPrimary(resultSet.getBoolean("is_primary"));
+            address = new AddressResponse();
+            address.setId(resultSet.getInt("ad.id"));
+            address.setUserId(resultSet.getInt("ad.user_id"));
+            address.setFirstname(resultSet.getString("ad.firstname"));
+            address.setLastname(resultSet.getString("ad.lastname"));
+            address.setPhone(resultSet.getLong("ad.phone"));
+            address.setCountryId(resultSet.getInt("ad.country_id"));
+            address.setCityId(resultSet.getInt("ad.city_id"));
+            address.setAddressLine1(resultSet.getNString("ad.address_line_1"));
+            address.setAddressLine2(resultSet.getNString("ad.address_line_2"));
+            address.setRegion(resultSet.getString("ad.region"));
+            address.setPostalCode(resultSet.getString("ad.postal_code"));
+            address.setPrimary(resultSet.getBoolean("ad.is_primary"));
 
-            addresses.add(address);
+            address.country.setName(resultSet.getString("co.name"));
+            address.city.setName(resultSet.getString("ci.name"));
+
+            addressesResponse.add(address);
         }
 
-        return addresses;
+        return addressesResponse;
     }
 
 }

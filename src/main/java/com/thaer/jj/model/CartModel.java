@@ -1,16 +1,15 @@
 package com.thaer.jj.model;
 
-import com.thaer.jj.core.utils.Strings;
 import com.thaer.jj.entities.Cart;
 import com.thaer.jj.exceptions.UnAuthorizedException;
 import com.thaer.jj.model.responseData.CartOfferResponse;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
