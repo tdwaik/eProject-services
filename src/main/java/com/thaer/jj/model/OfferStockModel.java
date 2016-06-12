@@ -81,11 +81,28 @@ public class OfferStockModel extends AbstractModel {
     }
 
     public boolean isStockAvailable(int id) throws SQLException {
+        if(id < 1) {
+            return false;
+        }
+
         String query = "SELECT stock_quantity FROM `offers_stock` WHERE id = ?";
         preparedStatement = dbCconnection.prepareStatement(query);
         preparedStatement.setInt(1, id);
         ResultSet resultSet = preparedStatement.executeQuery();
 
         return resultSet.next() && resultSet.getInt("stock_quantity") > 0;
+    }
+
+    public int getSellerIdByStockId(int offerStockId) throws SQLException {
+        if(offerStockId < 1) {
+            return 0;
+        }
+
+        String query = "SELECT seller_id FROM offers INNER JOIN offers_variations ON offers.id = offers_variations.offer_id INNER JOIN `offers_stock` ON offers_stock.variation_id = offers_variations.id WHERE offers_stock.id = ?";
+        preparedStatement = dbCconnection.prepareStatement(query);
+        preparedStatement.setInt(1, offerStockId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        return resultSet.next()? resultSet.getInt("seller_id") : 0;
     }
 }

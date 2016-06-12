@@ -4,7 +4,6 @@ import com.thaer.jj.core.utils.Strings;
 import com.thaer.jj.entities.Color;
 import com.thaer.jj.entities.OfferStock;
 import com.thaer.jj.entities.Seller;
-import com.thaer.jj.model.responseData.CartOfferResponse;
 import com.thaer.jj.model.responseData.OfferViewResponse;
 import com.thaer.jj.model.responseData.LastOffersResponse;
 import com.thaer.jj.model.sets.OfferDetails;

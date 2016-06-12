@@ -13,7 +13,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Created by stig on 5/1/16.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since May 1, 2016.
  */
 @Path("addresses")
 public class AddressController extends MainController {
@@ -105,6 +106,8 @@ public class AddressController extends MainController {
             }
             if(addressInfo.has("isPrimary") && addressInfo.get("isPrimary") != null) {
                 address.setPrimary(addressInfo.get("isPrimary").getAsBoolean());
+            }else {
+                address.setPrimary(false);
             }
 
             AddressModel addressModel = new AddressModel();
@@ -123,7 +126,7 @@ public class AddressController extends MainController {
 
         }catch(SQLException e) {
             e.printStackTrace();
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -143,7 +146,6 @@ public class AddressController extends MainController {
             addressModel.deleteAddressById(getAuthBuyer(), addressId);
             return Response.status(Response.Status.ACCEPTED).build();
         }catch(UnAuthorizedException e) {
-            e.printStackTrace();
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }catch(SQLException e) {
             e.printStackTrace();
@@ -208,4 +210,33 @@ public class AddressController extends MainController {
 //            return Response.status(Response.Status.BAD_REQUEST).build();
 //        }
 //    }
+
+    @GET
+    @Path("makeAddressPrimary/{addressId}")
+    public Response makeAddressPrimary(@PathParam("addressId") int addressId) {
+        try {
+            if(getAuthBuyer() == null) {
+                return Response.status(Response.Status.UNAUTHORIZED).build();
+            }
+
+            if(addressId < 1) {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
+            AddressModel addressModel = new AddressModel();
+            int result = addressModel.makeAddressPrimary(getAuthBuyer().getId(), addressId);
+
+            if(result > 0) {
+                return Response.status(Response.Status.ACCEPTED).build();
+            }else {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
+        } catch (UnAuthorizedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

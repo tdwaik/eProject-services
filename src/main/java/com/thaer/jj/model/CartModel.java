@@ -1,8 +1,10 @@
 package com.thaer.jj.model;
 
 import com.thaer.jj.entities.Cart;
+import com.thaer.jj.entities.Fee;
 import com.thaer.jj.exceptions.UnAuthorizedException;
 import com.thaer.jj.model.responseData.CartOfferResponse;
+import com.thaer.jj.model.responseData.CartPriceSummary;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -15,8 +17,17 @@ import java.util.ArrayList;
  * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
  * @since June 3, 2016.
  */
-public class CartModel extends AddressModel {
+public class CartModel extends AbstractModel {
     public CartModel() throws SQLException {
+    }
+
+    public Cart getCartById(int cartId) throws SQLException {
+        String query = "SELECT * FROM cart WHERE id = ?";
+        PreparedStatement preparedStatement = dbCconnection.prepareStatement(query);
+        preparedStatement.setInt(1, cartId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet.next()? fillData(resultSet) : null;
+
     }
 
     /**
@@ -40,7 +51,7 @@ public class CartModel extends AddressModel {
         }
 
         // if exits add increment quantity
-        String query = "SELECT id FROM cart WHERE buyer_id = ? AND offer_stock_id = ?";
+        String query = "SELECT id, quantity FROM cart WHERE buyer_id = ? AND offer_stock_id = ?";
         PreparedStatement preparedStatement = dbCconnection.prepareStatement(query);
         preparedStatement.setInt(1, buyerId);
         preparedStatement.setInt(2, offerStockId);
@@ -49,7 +60,7 @@ public class CartModel extends AddressModel {
         if(resultSet.next()) {
             // increment quantity
             int cartId = resultSet.getInt("id");
-            return incrementQuantity(cartId, quantity);
+            return updateQuantity(cartId, resultSet.getInt("quantity") + quantity);
 
         }else {
             // add new item to cart
@@ -71,22 +82,15 @@ public class CartModel extends AddressModel {
 
     }
 
-    /**
-     *
-     * @param cartId
-     * @param incrementAmount
-     * @return
-     * @throws SQLException
-     */
-    public int incrementQuantity(int cartId, int incrementAmount) throws SQLException {
+    public int updateQuantity(int cartId, int quantity) throws SQLException {
 
-        if(incrementAmount < 1) {
+        if(quantity < 1) {
             throw new IllegalArgumentException();
         }
 
-        String query = "UPDATE cart SET quantity = quantity + ? WHERE id = ?";
+        String query = "UPDATE cart SET quantity = ? WHERE id = ?";
         PreparedStatement preparedStatement = dbCconnection.prepareStatement(query);
-        preparedStatement.setInt(1, incrementAmount);
+        preparedStatement.setInt(1, quantity);
         preparedStatement.setInt(2, cartId);
 
         return preparedStatement.executeUpdate();
@@ -106,19 +110,23 @@ public class CartModel extends AddressModel {
         ResultSet resultSet = preparedStatement.executeQuery();
 
         ArrayList<Cart> cartOffers = new ArrayList<>();
-        Cart cart;
         while (resultSet.next()) {
-            cart = new Cart();
-            cart.setId(resultSet.getInt("id"));
-            cart.setBuyerId(resultSet.getInt("buyer_id"));
-            cart.setOfferStockId(resultSet.getInt("offer_stock_id"));
-            cart.setInsertDate(resultSet.getTimestamp("insert_date"));
-            cart.setLastUpdate(resultSet.getTimestamp("last_update"));
-            cartOffers.add(cart);
+            cartOffers.add(fillData(resultSet));
         }
 
         return cartOffers;
 
+    }
+
+    public Cart fillData(ResultSet resultSet) throws SQLException {
+        Cart cart = new Cart();
+        cart.setId(resultSet.getInt("id"));
+        cart.setBuyerId(resultSet.getInt("buyer_id"));
+        cart.setOfferStockId(resultSet.getInt("offer_stock_id"));
+        cart.setInsertDate(resultSet.getTimestamp("insert_date"));
+        cart.setLastUpdate(resultSet.getTimestamp("last_update"));
+
+        return cart;
     }
 
     /**
@@ -130,7 +138,7 @@ public class CartModel extends AddressModel {
     public ArrayList<CartOfferResponse> getCartOffersByBuyerId(int buyerId) throws SQLException {
         String query = "" +
                 "SELECT cart.id, cart.quantity, " +
-                "o.id, ov.id, o.title, o.status, " +
+                "o.id, ov.id, o.title, o.status, o.seller_id, " +
                 "os.price, os.stock_quantity, os.size_id, " +
                 "ov.picture, ov.status, " +
                 "c.name, " +
@@ -158,7 +166,7 @@ public class CartModel extends AddressModel {
             cartOfferResponse.picture = resultSet.getString("ov.picture");
             cartOfferResponse.color = resultSet.getString("c.name");
             cartOfferResponse.size = resultSet.getString("s.name");
-            cartOfferResponse.price = resultSet.getBigDecimal("os.price");
+            cartOfferResponse.price = calculateFinalPrice(resultSet.getInt("o.seller_id"), resultSet.getBigDecimal("os.price"));
 
             // check if item has stock quantity
             if(resultSet.getString("o.status") == "unavailable" || resultSet.getString("ov.status") == "unavailable") {
@@ -191,5 +199,45 @@ public class CartModel extends AddressModel {
         preparedStatement = dbCconnection.prepareStatement(query);
         return preparedStatement.executeUpdate();
 
+    }
+
+    public CartPriceSummary getOrderSummary(int buyerId) throws SQLException {
+        ArrayList<Cart> cartList = getCartByBuyerId(buyerId);
+        OfferStockModel offerStockModel = new OfferStockModel();
+        CartPriceSummary cartPriceSummary = new CartPriceSummary();
+
+        String query = "" +
+                "SELECT cart.*, os.price, o.seller_id FROM cart " +
+                "INNER JOIN offers_stock os ON cart.offer_stock_id = os.id " +
+                "INNER JOIN offers_variations ov ON os.variation_id = ov.id " +
+                "INNER JOIN offers o ON ov.offer_id = o.id " +
+                "WHERE cart.buyer_id = " + buyerId;
+        preparedStatement = dbCconnection.prepareStatement(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while(resultSet.next()) {
+//            int sellerId = offerStockModel.getSellerIdByStockId(resultSet.getInt("cart.offer_stock_id"));
+//            if(sellerId > 0) {
+            BigDecimal offerPrice = calculateFinalPrice(resultSet.getInt("o.seller_id"), resultSet.getBigDecimal("os.price"));
+            cartPriceSummary.itemsTotalPrice = cartPriceSummary.itemsTotalPrice.add(offerPrice);
+                // TODO the strong q: a lot of joins vs a lot of requests ?????
+//            }else {
+//                // TODO handel this ya menz
+//                throw new IllegalArgumentException();
+//            }
+        }
+
+        cartPriceSummary.shippingCost = new BigDecimal(8);
+
+        cartPriceSummary.subtotal = cartPriceSummary.itemsTotalPrice.add(cartPriceSummary.shippingCost);
+
+        return cartPriceSummary;
+    }
+
+    public BigDecimal calculateFinalPrice(int sellerId, BigDecimal price) throws SQLException {
+        FeeModel feeModel = new FeeModel();
+        Fee fee = feeModel.getSellerFee(sellerId);
+        BigDecimal feePercentage = new BigDecimal(fee.getPercentage());
+        return price.add(price.multiply(feePercentage));
     }
 }

@@ -1,8 +1,10 @@
 package com.thaer.jj.controller.eproject;
 
+import com.thaer.jj.entities.Cart;
 import com.thaer.jj.exceptions.UnAuthorizedException;
 import com.thaer.jj.model.CartModel;
 import com.thaer.jj.model.responseData.CartOfferResponse;
+import com.thaer.jj.model.responseData.CartPriceSummary;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -77,6 +79,53 @@ public class CartController extends MainController {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    }
+
+    @GET
+    @Path("/orderSummary")
+    public Response getOrderSummary() {
+        try {
+            if(getAuthBuyer() == null) {
+                return Response.status(Response.Status.UNAUTHORIZED).build();
+            }
+
+            CartModel cartModel = new CartModel();
+            CartPriceSummary cartPriceSummary = cartModel.getOrderSummary(getAuthBuyer().getId());
+            System.out.println(cartPriceSummary.itemsTotalPrice);
+            return Response.ok().entity(toJson(cartPriceSummary)).build();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @POST
+    @Path("/updateQuantity")
+    public Response updateQuantity(@FormParam("cartId") int cartId, @FormParam("quantity") int quantity) {
+        try {
+            if(getAuthBuyer() == null) {
+                return Response.status(Response.Status.UNAUTHORIZED).build();
+            }
+
+            CartModel cartModel = new CartModel();
+            Cart cart = cartModel.getCartById(cartId);
+
+            if(cart.getBuyerId() != getAuthBuyer().getId()) {
+                return Response.status(Response.Status.UNAUTHORIZED).build();
+            }
+
+            int result = cartModel.updateQuantity(cartId, quantity);
+            if(result > 0) {
+                return Response.ok().build();
+            }else {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

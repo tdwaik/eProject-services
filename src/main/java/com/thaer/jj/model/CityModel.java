@@ -7,14 +7,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Created by stig on 5/1/16.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since May 1, 2016.
  */
 public class CityModel extends AbstractModel {
     public CityModel() throws SQLException {
     }
 
     public ArrayList<City> getCitiesListByCountryId(int countryId) throws SQLException {
-        ResultSet resultSet = executeQuery("SELECT id, name FROM cities WHERE country_id = " + countryId);
+        ResultSet resultSet = executeQuery("SELECT id, name FROM cities WHERE country_id = " + countryId + " ORDER BY name ASC");
 
         ArrayList<City> cities = new ArrayList<>();
         City city;

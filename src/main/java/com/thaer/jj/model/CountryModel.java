@@ -7,7 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Created by stig on 4/30/16.
+ * @author Thaer AlDwaik <thaer_aldwaik@hotmail.com>
+ * @since April 30, 2016.
  */
 public class CountryModel extends AbstractModel {
     public CountryModel() throws SQLException {
@@ -15,7 +16,7 @@ public class CountryModel extends AbstractModel {
 
     public ArrayList<Country> getCountriesList() throws SQLException {
 
-        ResultSet resultSet = executeQuery("SELECT * from countries");
+        ResultSet resultSet = executeQuery("SELECT * from countries ORDER BY name ASC");
 
         ArrayList<Country> countries = new ArrayList<>();
         Country country;
